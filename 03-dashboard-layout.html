@@ -81,7 +81,7 @@
 
   .options {
     display: grid; gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   }
 
   /* ───── Native-radio picker wrapper ───── */
@@ -148,33 +148,41 @@
   }
 
   /* ───── 1. KPI strip ───── */
+  /* 6-column grid that gives a balanced 3+2 layout for 5 cells:
+     row 1 = 3 cells × 2 cols (each 1/3 width); row 2 = 2 cells × 3 cols (each 1/2 width).
+     Cleanest readable mini-preview at any width without trying to squeeze 5-across. */
   .kpi-strip {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 8px;
     padding: 14px;
     background: #f8fafc; border-radius: 8px;
   }
+  .kpi-cell:nth-child(1),
+  .kpi-cell:nth-child(2),
+  .kpi-cell:nth-child(3) { grid-column: span 2; }
+  .kpi-cell:nth-child(4),
+  .kpi-cell:nth-child(5) { grid-column: span 3; }
   .kpi-cell {
     background: white; border: 1px solid var(--border);
-    border-radius: 6px; padding: 8px 10px;
-    display: flex; flex-direction: column; gap: 2px;
+    border-radius: 6px; padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 3px;
     min-width: 0;
   }
   .kpi-cell .lbl {
-    font-size: 9px; color: var(--ink-3);
+    font-size: 10px; color: var(--ink-3);
     text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .kpi-cell .val {
-    font-size: 14px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em;
+    font-size: 16px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em;
   }
   .kpi-cell .trend {
-    font-size: 9px; color: #059669; font-weight: 600; margin-top: 2px;
+    font-size: 10px; color: #059669; font-weight: 600; margin-top: 2px;
   }
   .kpi-cell .trend.warn { color: #dc2626; }
   .kpi-cell .icon-stripe {
-    height: 3px; border-radius: 2px; margin: -8px -10px 6px;
+    height: 3px; border-radius: 2px; margin: -10px -12px 6px;
   }
   .kpi-cell.rev .icon-stripe { background: var(--accent-rev); }
   .kpi-cell.people .icon-stripe { background: var(--accent-people); }
@@ -539,6 +547,15 @@
   @media (max-width: 900px) {
     #decision-panel { grid-template-columns: 1fr; max-height: none; }
     body { padding-bottom: 380px; }
+  }
+  @media (max-width: 700px) {
+    .page { padding: 28px 16px 64px; }
+    .options { grid-template-columns: 1fr; }
+    section.dimension p.section-blurb { margin-left: 0; }
+    header.page-header h1 { font-size: 26px; }
+    /* Right-rail demo stacks at mobile so the rail content is full-width legible */
+    .right-rail-demo { grid-template-columns: 1fr; }
+    .right-rail-demo .stub-main { min-height: 60px; }
   }
 </style>
 </head>

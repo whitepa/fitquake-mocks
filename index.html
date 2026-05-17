@@ -202,6 +202,17 @@
     border-bottom: 1px dotted var(--ink-3);
   }
   footer a:hover { color: var(--brand); border-color: var(--brand); }
+
+  @media (max-width: 600px) {
+    .page { padding: 40px 18px 64px; }
+    h1 { font-size: 26px; }
+    p.intro { font-size: 15px; }
+    .decision-card { padding: 18px 18px; }
+    .decision-card .row { flex-direction: column; }
+    .decision-card .meta { flex-wrap: wrap; }
+    .decision-card .desc { font-size: 13px; }
+    .badge { align-self: flex-start; }
+  }
 </style>
 </head>
 <body>

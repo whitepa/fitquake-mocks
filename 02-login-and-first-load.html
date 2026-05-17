@@ -96,7 +96,7 @@
   .options {
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   }
 
   /* ───── Native-radio picker wrapper ───── */
@@ -594,6 +594,12 @@
   @media (max-width: 900px) {
     #decision-panel { grid-template-columns: 1fr; max-height: none; }
     body { padding-bottom: 380px; }
+  }
+  @media (max-width: 700px) {
+    .page { padding: 28px 16px 64px; }
+    .options { grid-template-columns: 1fr; }
+    section.dimension p.section-blurb { margin-left: 0; }
+    header.page-header h1 { font-size: 26px; }
   }
 </style>
 </head>
