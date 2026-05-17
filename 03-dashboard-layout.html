@@ -1,0 +1,1389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fitquake · Round 3 — Dashboard Layout</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --ink-3: #64748b;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --brand: #0d9488;
+    --brand-tint: #ccfbf1;
+    --brand-deep: #0E3F3B;
+    --accent-rev: #14b8a6;
+    --accent-people: #6366f1;
+    --accent-activity: #f59e0b;
+    --radius: 10px;
+    --panel-h: 168px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body { padding-bottom: var(--panel-h); }
+  .page { max-width: 1280px; margin: 0 auto; padding: 48px 32px 96px; }
+
+  header.page-header { margin-bottom: 48px; }
+  header.page-header .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: 11px; font-weight: 600; color: var(--ink-3);
+  }
+  header.page-header .breadcrumb {
+    font-size: 13px; color: var(--ink-3); margin-bottom: 8px;
+  }
+  header.page-header .breadcrumb a {
+    color: var(--brand); text-decoration: none;
+  }
+  header.page-header .breadcrumb a:hover { text-decoration: underline; }
+  header.page-header h1 {
+    font-size: 34px; margin: 8px 0 12px;
+    letter-spacing: -0.02em; font-weight: 700;
+  }
+  header.page-header p {
+    margin: 0; color: var(--ink-2); max-width: 720px;
+    line-height: 1.55; font-size: 15px;
+  }
+  header.page-header .hint {
+    margin-top: 16px; padding: 14px 16px;
+    background: #ecfeff; border: 1px solid #a5f3fc;
+    border-radius: 8px; color: #155e75;
+    font-size: 14px; line-height: 1.5;
+  }
+  header.page-header .hint strong { color: #0e7490; }
+
+  section.dimension { margin-top: 56px; }
+  section.dimension .section-head {
+    display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px;
+  }
+  section.dimension .section-num {
+    width: 36px; height: 36px; border-radius: 999px;
+    background: var(--ink); color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
+  section.dimension h2 {
+    font-size: 22px; font-weight: 700; margin: 0; letter-spacing: -0.01em;
+  }
+  section.dimension p.section-blurb {
+    color: var(--ink-2); margin: 4px 0 24px 50px;
+    font-size: 14px; line-height: 1.55; max-width: 760px;
+  }
+
+  .options {
+    display: grid; gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  /* ───── Native-radio picker wrapper ───── */
+  .opt-wrap {
+    display: block; cursor: pointer; position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .opt-wrap input[type="radio"] {
+    position: absolute; opacity: 0; pointer-events: none;
+  }
+  .option {
+    background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+    height: 100%;
+  }
+  .opt-wrap:hover .option {
+    border-color: var(--border-strong);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  }
+  .opt-wrap input:checked + .option {
+    border-color: var(--brand); border-width: 2px;
+    box-shadow: 0 0 0 4px var(--brand-tint), 0 4px 12px rgba(13, 148, 136, 0.12);
+  }
+  .opt-wrap input:focus-visible + .option {
+    outline: 2px solid var(--brand); outline-offset: 4px;
+  }
+  .checkmark {
+    position: absolute; top: 10px; right: 10px;
+    width: 26px; height: 26px; border-radius: 999px;
+    background: var(--brand); color: white;
+    display: none; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; z-index: 2;
+    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+  }
+  .opt-wrap input:checked ~ .checkmark { display: flex; }
+
+  .option-header {
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: #fafbfc;
+  }
+  .opt-wrap input:checked + .option .option-header {
+    background: var(--brand-tint); border-bottom-color: var(--brand);
+  }
+  .option-label {
+    font-weight: 700; font-size: 13px; letter-spacing: 0.04em;
+    background: var(--ink); color: white;
+    padding: 4px 8px; border-radius: 4px;
+  }
+  .opt-wrap input:checked + .option .option-label { background: var(--brand); }
+  .option-name { font-weight: 600; font-size: 14px; color: var(--ink); }
+  .option-body {
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 14px;
+    flex: 1;
+  }
+  .option-note {
+    font-size: 12px; color: var(--ink-3); line-height: 1.5;
+    margin-top: auto; padding-top: 8px; border-top: 1px dashed var(--border);
+  }
+
+  /* ───── 1. KPI strip ───── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    padding: 14px;
+    background: #f8fafc; border-radius: 8px;
+  }
+  .kpi-cell {
+    background: white; border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 10px;
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0;
+  }
+  .kpi-cell .lbl {
+    font-size: 9px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .kpi-cell .val {
+    font-size: 14px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em;
+  }
+  .kpi-cell .trend {
+    font-size: 9px; color: #059669; font-weight: 600; margin-top: 2px;
+  }
+  .kpi-cell .trend.warn { color: #dc2626; }
+  .kpi-cell .icon-stripe {
+    height: 3px; border-radius: 2px; margin: -8px -10px 6px;
+  }
+  .kpi-cell.rev .icon-stripe { background: var(--accent-rev); }
+  .kpi-cell.people .icon-stripe { background: var(--accent-people); }
+  .kpi-cell.activity .icon-stripe { background: var(--accent-activity); }
+  .kpi-cell.mixed .icon-stripe { background: var(--ink-3); }
+
+  /* ───── 2. Hero chart previews ───── */
+  .hero-chart-frame {
+    background: white; border-radius: 8px; padding: 14px;
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .hero-chart-frame .title-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .hero-chart-frame .title { font-size: 13px; font-weight: 700; }
+  .hero-chart-frame .sub { font-size: 10px; color: var(--ink-3); }
+  .hero-chart-frame svg { width: 100%; height: 90px; }
+  .hero-chart-frame .footer-toggle {
+    display: flex; gap: 4px;
+    font-size: 9px; color: var(--ink-3);
+  }
+  .hero-chart-frame .footer-toggle .seg {
+    padding: 2px 6px; border-radius: 4px; background: #f1f5f9;
+  }
+  .hero-chart-frame .footer-toggle .seg.active {
+    background: var(--brand); color: white; font-weight: 600;
+  }
+
+  /* ───── 3. Today's Schedule placement ───── */
+  .schedule-mock {
+    background: #f8fafc; border-radius: 8px; padding: 12px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .sm-rect {
+    height: 6px; border-radius: 2px; background: #cbd5e1;
+  }
+  .sm-rect.brand { background: var(--brand); }
+  .sm-grid-section {
+    background: white; border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;
+  }
+  .sm-grid-section .col {
+    height: 60px; background: #f1f5f9; border-radius: 3px;
+    position: relative;
+  }
+  .sm-grid-section .col::before {
+    content: "";
+    position: absolute; top: 6px; left: 4px; right: 4px;
+    height: 10px; background: var(--brand-tint);
+    border-left: 2px solid var(--brand); border-radius: 2px;
+  }
+  .sm-grid-section .col:nth-child(2)::before {
+    top: 20px; height: 14px;
+    background: #fef3c7; border-left-color: #f59e0b;
+  }
+  .sm-grid-section .col:nth-child(3)::before {
+    top: 36px; height: 8px;
+    background: #fce7f3; border-left-color: #ec4899;
+  }
+  .sm-grid-section .col:nth-child(4)::before {
+    top: 14px; height: 18px;
+    background: #ddd6fe; border-left-color: #8b5cf6;
+  }
+
+  .layout-stack {
+    display: grid; gap: 6px;
+    background: #f8fafc; padding: 12px; border-radius: 8px;
+  }
+  .layout-row {
+    background: white; border: 1px solid var(--border);
+    border-radius: 4px; padding: 6px 8px;
+    font-size: 9px; color: var(--ink-2);
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+  }
+  .layout-row.kpi-row { background: linear-gradient(90deg, #ecfeff, #ccfbf1); color: var(--brand-deep); font-weight: 600; }
+  .layout-row.tall { padding: 12px 8px; min-height: 70px; }
+  .layout-row.brand-marked { border-left: 3px solid var(--brand); padding-left: 6px; justify-content: flex-start; font-weight: 600; color: var(--brand-deep); }
+  .layout-row.muted { color: var(--ink-3); background: #f8fafc; border-style: dashed; }
+
+  .layout-split {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 6px;
+    background: #f8fafc; padding: 12px; border-radius: 8px;
+  }
+  .layout-split .left-stack,
+  .layout-split .right-stack {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  .layout-tabs {
+    background: #f8fafc; padding: 12px; border-radius: 8px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .layout-tabs .tab-row {
+    display: flex; gap: 0; border-bottom: 1px solid var(--border);
+  }
+  .layout-tabs .tab {
+    padding: 5px 10px; font-size: 10px; color: var(--ink-3);
+    border-bottom: 2px solid transparent;
+  }
+  .layout-tabs .tab.active {
+    color: var(--brand); border-bottom-color: var(--brand); font-weight: 600;
+  }
+
+  /* ───── 4. Right-rail content ───── */
+  .right-rail-demo {
+    background: #f8fafc; border-radius: 8px; padding: 12px;
+    display: grid; grid-template-columns: 1fr 100px; gap: 6px;
+  }
+  .right-rail-demo .stub-main {
+    background: white; border: 1px solid var(--border);
+    border-radius: 4px; min-height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-3); font-size: 10px;
+  }
+  .right-rail-demo .rail-content {
+    background: white; border: 1px solid var(--border);
+    border-radius: 4px; padding: 8px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .right-rail-demo .rail-title {
+    font-size: 9px; font-weight: 700; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border); padding-bottom: 4px;
+  }
+  .right-rail-demo .rail-item {
+    display: flex; gap: 5px; align-items: center;
+    font-size: 9px; color: var(--ink-2);
+  }
+  .right-rail-demo .rail-item .av {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: linear-gradient(135deg, #14b8a6, #0d9488); flex-shrink: 0;
+  }
+  .right-rail-demo .rail-item .av.b { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+  .right-rail-demo .rail-item .av.c { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+  .right-rail-demo .rail-item .av.task {
+    background: white; border: 1.5px solid var(--brand);
+    border-radius: 3px;
+  }
+  .right-rail-demo .rail-item .av.task.done {
+    background: var(--brand);
+  }
+  .right-rail-demo .rail-item .av.alert {
+    background: #fef2f2; border: 1.5px solid #dc2626;
+    color: #dc2626; font-size: 9px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+  }
+  .right-rail-demo .rail-item .label {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    flex: 1;
+  }
+  .right-rail-demo .rail-item .time {
+    font-size: 8px; color: var(--ink-3);
+  }
+  .right-rail-demo .rail-section + .rail-section { margin-top: 6px; }
+
+  /* ───── 5. Density ───── */
+  .density-demo {
+    background: #f8fafc; padding: 14px; border-radius: 8px;
+  }
+  .density-demo .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap, 12px);
+    padding: var(--padding, 16px);
+    margin-bottom: var(--gap, 12px);
+  }
+  .density-demo .kpi .c {
+    background: #f8fafc; border: 1px solid var(--border);
+    border-radius: 4px; padding: var(--cell-padding, 10px);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .density-demo .kpi .c .l {
+    font-size: 9px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
+  }
+  .density-demo .kpi .c .v { font-size: 15px; font-weight: 700; }
+  .density-demo.generous { --gap: 14px; --padding: 18px; --cell-padding: 12px; }
+  .density-demo.compact { --gap: 6px; --padding: 8px; --cell-padding: 6px; }
+  .density-demo.compact .kpi .c .v { font-size: 13px; }
+  .density-demo .toggle-bar {
+    display: flex; justify-content: flex-end; padding: 4px 0;
+    margin-bottom: 6px;
+  }
+  .density-demo .toggle-bar .toggle {
+    background: white; border: 1px solid var(--border);
+    border-radius: 999px; padding: 2px;
+    display: inline-flex; gap: 2px; font-size: 9px;
+  }
+  .density-demo .toggle-bar .toggle .seg {
+    padding: 2px 8px; border-radius: 999px; color: var(--ink-3);
+  }
+  .density-demo .toggle-bar .toggle .seg.active {
+    background: var(--brand); color: white; font-weight: 600;
+  }
+
+  /* ───── 6. Empty / first-day state ───── */
+  .empty-demo {
+    background: white; border: 1px solid var(--border);
+    border-radius: 8px; padding: 22px;
+    min-height: 200px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px; text-align: center;
+  }
+  .empty-demo .glyph {
+    width: 56px; height: 56px;
+    background: var(--brand-tint);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand); font-size: 28px; font-weight: 700;
+  }
+  .empty-demo .ed-title {
+    font-size: 14px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .empty-demo .ed-sub {
+    font-size: 11px; color: var(--ink-3); max-width: 220px; line-height: 1.5;
+  }
+  .empty-demo .ed-cta-row {
+    display: flex; gap: 6px; margin-top: 6px;
+  }
+  .empty-demo .ed-cta {
+    background: var(--brand); color: white;
+    padding: 6px 12px; border-radius: 5px;
+    font-size: 10px; font-weight: 600;
+  }
+  .empty-demo .ed-cta.alt {
+    background: white; color: var(--brand);
+    border: 1px solid var(--brand);
+  }
+  .empty-demo.demo-data {
+    align-items: stretch; justify-content: flex-start;
+    padding: 0; overflow: hidden;
+  }
+  .empty-demo.demo-data .demo-banner {
+    background: #fffbeb; border-bottom: 1px solid #fef3c7;
+    color: #92400e; font-size: 10px; font-weight: 600;
+    padding: 8px 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .empty-demo.demo-data .demo-banner::before {
+    content: "ⓘ"; color: #f59e0b;
+  }
+  .empty-demo.demo-data .demo-kpis {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+    padding: 12px;
+  }
+  .empty-demo.demo-data .demo-cell {
+    background: #f8fafc; border: 1px solid var(--border);
+    border-radius: 4px; padding: 8px;
+  }
+  .empty-demo.demo-data .demo-cell .l {
+    font-size: 8px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
+  }
+  .empty-demo.demo-data .demo-cell .v {
+    font-size: 13px; font-weight: 700; margin-top: 2px;
+    opacity: 0.6;
+  }
+  .empty-demo.demo-data .demo-chart {
+    margin: 0 12px 12px; padding: 8px;
+    background: #f8fafc; border: 1px solid var(--border);
+    border-radius: 4px; height: 70px;
+    display: flex; align-items: flex-end; gap: 4px;
+  }
+  .empty-demo.demo-data .demo-chart .bar {
+    flex: 1; background: rgba(13, 148, 136, 0.4);
+    border-radius: 2px 2px 0 0;
+  }
+  .empty-demo.minimal {
+    align-items: stretch; padding: 12px; gap: 8px;
+  }
+  .empty-demo.minimal .min-cell {
+    background: #f8fafc; border: 1px dashed var(--border-strong);
+    border-radius: 4px; padding: 10px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .empty-demo.minimal .min-cell .left {
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .empty-demo.minimal .min-cell .l {
+    font-size: 9px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
+  }
+  .empty-demo.minimal .min-cell .v {
+    font-size: 15px; font-weight: 700; color: var(--ink-3);
+  }
+  .empty-demo.minimal .min-cell .hint {
+    font-size: 10px; color: var(--brand); font-weight: 600;
+  }
+
+  /* ───── Decision panel (sticky bottom) ───── */
+  #decision-panel {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white; border-top: 2px solid var(--brand);
+    box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
+    padding: 16px 24px; z-index: 10;
+    display: grid; grid-template-columns: 1fr 1fr auto;
+    gap: 20px; align-items: start;
+    max-height: var(--panel-h);
+  }
+  #decision-panel .panel-col h4 {
+    margin: 0 0 6px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3);
+  }
+  #decision-panel .reviewer-row {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 10px;
+  }
+  #decision-panel input[type="text"] {
+    flex: 1; padding: 8px 10px;
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13px; font-family: inherit; color: var(--ink);
+  }
+  #decision-panel input[type="text"]:focus,
+  #decision-panel textarea:focus {
+    outline: 2px solid var(--brand); outline-offset: -2px;
+    border-color: var(--brand);
+  }
+  #decision-panel .picks-row {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px; color: var(--ink);
+    background: #f8fafc; border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px; line-height: 1.6;
+    min-height: 38px; word-break: break-word;
+  }
+  #decision-panel .picks-row .none {
+    color: var(--ink-3); font-style: italic; font-family: inherit;
+  }
+  #decision-panel textarea {
+    width: 100%; min-height: 86px;
+    padding: 8px 10px;
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13px; font-family: inherit; color: var(--ink);
+    resize: vertical;
+  }
+  #decision-panel .actions {
+    display: flex; flex-direction: column; gap: 8px; min-width: 200px;
+  }
+  #decision-panel button {
+    cursor: pointer; border: none;
+    padding: 10px 14px; border-radius: 6px;
+    font-size: 13px; font-weight: 600; font-family: inherit;
+    transition: background-color 120ms;
+  }
+  #decision-panel button.primary { background: var(--brand); color: white; }
+  #decision-panel button.primary:hover { background: #0f766e; }
+  #decision-panel button.primary.copied { background: #059669; }
+  #decision-panel button.ghost {
+    background: white; color: var(--ink-2); border: 1px solid var(--border);
+  }
+  #decision-panel button.ghost:hover { background: #f1f5f9; }
+  #decision-panel .progress-line {
+    font-size: 12px; color: var(--ink-3); text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    #decision-panel { grid-template-columns: 1fr; max-height: none; }
+    body { padding-bottom: 380px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="breadcrumb"><a href="./">← All decisions</a></div>
+    <div class="eyebrow">Round 3 · Dashboard Layout &amp; Widgets</div>
+    <h1>What does the home screen prioritize?</h1>
+    <p>The Ops dashboard is the screen the majority of authenticated staff will see every time they
+       log in. This round shapes which numbers lead, what chart anchors the page, what shows in
+       the side rail, where today's schedule lives, how dense the surface feels, and what a brand-new
+       business sees before they have data.</p>
+    <div class="hint">
+      <strong>Six dimensions, ~6 minutes.</strong> Your picks are saved in your browser as you go.
+      Hit Copy decision at the bottom when done and paste back to Phil.
+    </div>
+  </header>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 1. Information priority — KPI strip                              -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="1">
+    <div class="section-head">
+      <span class="section-num">1</span>
+      <h2>Information priority (the 5 KPI cards)</h2>
+    </div>
+    <p class="section-blurb">
+      What goes in the top-of-fold KPI strip. Five cards left-to-right. The order signals what
+      "success" means at a glance every morning.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Revenue-first</span>
+            <span class="option-label">1A</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip">
+              <div class="kpi-cell rev"><div class="icon-stripe"></div><div class="lbl">Revenue</div><div class="val">$126K</div><div class="trend">↑ 4.2%</div></div>
+              <div class="kpi-cell people"><div class="icon-stripe"></div><div class="lbl">Members</div><div class="val">1,250</div><div class="trend">↑ 1.8%</div></div>
+              <div class="kpi-cell activity"><div class="icon-stripe"></div><div class="lbl">Classes</div><div class="val">245</div><div class="trend">↑ 0.9%</div></div>
+              <div class="kpi-cell rev"><div class="icon-stripe"></div><div class="lbl">PT Util</div><div class="val">68%</div><div class="trend">↑ 2.1%</div></div>
+              <div class="kpi-cell people"><div class="icon-stripe"></div><div class="lbl">Retain</div><div class="val">92%</div><div class="trend">↑ 0.4%</div></div>
+            </div>
+            <p class="option-note">Matches the ChatGPT inspiration. Money-up-front says "this is a business." Operator mindset. Best when the user is an owner or finance lead. May feel cold for trainers.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">People-first</span>
+            <span class="option-label">1B</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip">
+              <div class="kpi-cell people"><div class="icon-stripe"></div><div class="lbl">Members</div><div class="val">1,250</div><div class="trend">↑ 1.8%</div></div>
+              <div class="kpi-cell people"><div class="icon-stripe"></div><div class="lbl">Visits Today</div><div class="val">47</div><div class="trend">↑ 12%</div></div>
+              <div class="kpi-cell activity"><div class="icon-stripe"></div><div class="lbl">Sessions Today</div><div class="val">8</div><div class="trend">↑ 1</div></div>
+              <div class="kpi-cell people"><div class="icon-stripe"></div><div class="lbl">New This Mo</div><div class="val">12</div><div class="trend">↑ 50%</div></div>
+              <div class="kpi-cell people"><div class="icon-stripe"></div><div class="lbl">Retention</div><div class="val">92%</div><div class="trend">↑ 0.4%</div></div>
+            </div>
+            <p class="option-note">Members + activity foregrounded. Warmer, more operational. Trainer- and front-desk-friendly. Revenue lives on a separate Finance page.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Activity-first (today)</span>
+            <span class="option-label">1C</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip">
+              <div class="kpi-cell activity"><div class="icon-stripe"></div><div class="lbl">Classes Today</div><div class="val">12</div><div class="trend">3 upcoming</div></div>
+              <div class="kpi-cell activity"><div class="icon-stripe"></div><div class="lbl">Bookings</div><div class="val">47</div><div class="trend">88% capacity</div></div>
+              <div class="kpi-cell activity"><div class="icon-stripe"></div><div class="lbl">Check-ins</div><div class="val">31</div><div class="trend">vs 28 yest.</div></div>
+              <div class="kpi-cell activity"><div class="icon-stripe"></div><div class="lbl">PT Sessions</div><div class="val">8</div><div class="trend">all confirmed</div></div>
+              <div class="kpi-cell activity"><div class="icon-stripe"></div><div class="lbl">Visits/Wk</div><div class="val">142</div><div class="trend">↑ 8%</div></div>
+            </div>
+            <p class="option-note">Today-focused operational view. Best for front-desk and managers running the floor. Revenue and trends live in the chart below. Strong "what's happening RIGHT NOW" framing.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="D">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Mixed / balanced</span>
+            <span class="option-label">1D</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip">
+              <div class="kpi-cell people"><div class="icon-stripe"></div><div class="lbl">Members</div><div class="val">1,250</div><div class="trend">↑ 1.8%</div></div>
+              <div class="kpi-cell rev"><div class="icon-stripe"></div><div class="lbl">Revenue MTD</div><div class="val">$126K</div><div class="trend">↑ 4.2%</div></div>
+              <div class="kpi-cell activity"><div class="icon-stripe"></div><div class="lbl">Today's Sessions</div><div class="val">12</div><div class="trend">8 PT, 4 class</div></div>
+              <div class="kpi-cell mixed"><div class="icon-stripe"></div><div class="lbl">Open Tasks</div><div class="val">5</div><div class="trend warn">2 overdue</div></div>
+              <div class="kpi-cell mixed"><div class="icon-stripe"></div><div class="lbl">Alerts</div><div class="val">3</div><div class="trend warn">1 billing</div></div>
+            </div>
+            <p class="option-note">One from each major area. No single mental model dominates. Good for users wearing many hats. Risk: nothing stands out as "the" number.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 2. Hero visualization                                            -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="2">
+    <div class="section-head">
+      <span class="section-num">2</span>
+      <h2>Hero visualization (the main chart)</h2>
+    </div>
+    <p class="section-blurb">
+      The big chart that anchors the dashboard below the KPI strip. Sets the narrative — is this
+      a business about money, traffic, growth, or operating efficiency?
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim2" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Revenue trend</span>
+            <span class="option-label">2A</span>
+          </div>
+          <div class="option-body">
+            <div class="hero-chart-frame">
+              <div class="title-row">
+                <span class="title">Revenue Overview</span>
+                <span class="sub">$126,430 · ↑ 4.2%</span>
+              </div>
+              <svg viewBox="0 0 300 90" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="g-rev" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 0 75 L 30 70 L 60 65 L 90 55 L 120 60 L 150 45 L 180 40 L 210 30 L 240 32 L 270 22 L 300 18 L 300 90 L 0 90 Z" fill="url(#g-rev)"/>
+                <path d="M 0 75 L 30 70 L 60 65 L 90 55 L 120 60 L 150 45 L 180 40 L 210 30 L 240 32 L 270 22 L 300 18" fill="none" stroke="#0d9488" stroke-width="2"/>
+              </svg>
+              <div class="footer-toggle">
+                <span class="seg">7d</span>
+                <span class="seg active">30d</span>
+                <span class="seg">90d</span>
+                <span class="seg">YTD</span>
+              </div>
+            </div>
+            <p class="option-note">Matches the ChatGPT inspiration. Money over time. Universally understood. Pairs naturally with 1A revenue-first KPIs.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim2" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Visit / traffic trend</span>
+            <span class="option-label">2B</span>
+          </div>
+          <div class="option-body">
+            <div class="hero-chart-frame">
+              <div class="title-row">
+                <span class="title">Daily Visits</span>
+                <span class="sub">142 visits/wk · ↑ 8%</span>
+              </div>
+              <svg viewBox="0 0 300 90" preserveAspectRatio="none">
+                <path d="M 0 50 L 20 30 L 40 55 L 60 38 L 80 60 L 100 25 L 120 70 L 140 45 L 160 28 L 180 58 L 200 30 L 220 50 L 240 28 L 260 55 L 280 35 L 300 48" fill="none" stroke="#0d9488" stroke-width="2"/>
+                <circle cx="100" cy="25" r="2.5" fill="#0d9488"/>
+                <circle cx="220" cy="50" r="2.5" fill="#0d9488"/>
+              </svg>
+              <div class="footer-toggle">
+                <span class="seg">7d</span>
+                <span class="seg active">30d</span>
+                <span class="seg">90d</span>
+              </div>
+            </div>
+            <p class="option-note">Weekly visit rhythm. Quickly surfaces "busy nights" / "dead mornings." Operational lens. Pairs well with 1B people-first or 1C activity-first.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim2" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Cash flow (in / out)</span>
+            <span class="option-label">2C</span>
+          </div>
+          <div class="option-body">
+            <div class="hero-chart-frame">
+              <div class="title-row">
+                <span class="title">Cash Flow · This Month</span>
+                <span class="sub">Net $42,180</span>
+              </div>
+              <svg viewBox="0 0 300 90" preserveAspectRatio="none">
+                <rect x="10" y="20"  width="20" height="55" fill="#0d9488"/>
+                <rect x="35" y="60"  width="20" height="15" fill="#dc2626" opacity="0.7"/>
+                <rect x="70" y="25"  width="20" height="50" fill="#0d9488"/>
+                <rect x="95" y="55"  width="20" height="20" fill="#dc2626" opacity="0.7"/>
+                <rect x="130" y="15" width="20" height="60" fill="#0d9488"/>
+                <rect x="155" y="58" width="20" height="17" fill="#dc2626" opacity="0.7"/>
+                <rect x="190" y="22" width="20" height="53" fill="#0d9488"/>
+                <rect x="215" y="62" width="20" height="13" fill="#dc2626" opacity="0.7"/>
+                <rect x="250" y="18" width="20" height="57" fill="#0d9488"/>
+                <rect x="275" y="60" width="20" height="15" fill="#dc2626" opacity="0.7"/>
+              </svg>
+              <div class="footer-toggle">
+                <span class="seg active">This month</span>
+                <span class="seg">3 mo</span>
+                <span class="seg">YTD</span>
+              </div>
+            </div>
+            <p class="option-note">Income (teal) vs. expense (red) side-by-side. Best for owner/CFO mental model. Less useful for trainer/front-desk. Stripe payments + payroll feed it naturally.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim2" value="D">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Member growth</span>
+            <span class="option-label">2D</span>
+          </div>
+          <div class="option-body">
+            <div class="hero-chart-frame">
+              <div class="title-row">
+                <span class="title">Active Members Over Time</span>
+                <span class="sub">1,250 · ↑ 12 this month</span>
+              </div>
+              <svg viewBox="0 0 300 90" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="g-mem" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="#6366f1" stop-opacity="0.28"/>
+                    <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 0 75 L 30 72 L 60 68 L 90 65 L 120 62 L 150 56 L 180 48 L 210 45 L 240 38 L 270 32 L 300 28 L 300 90 L 0 90 Z" fill="url(#g-mem)"/>
+                <path d="M 0 75 L 30 72 L 60 68 L 90 65 L 120 62 L 150 56 L 180 48 L 210 45 L 240 38 L 270 32 L 300 28" fill="none" stroke="#6366f1" stroke-width="2"/>
+              </svg>
+              <div class="footer-toggle">
+                <span class="seg">30d</span>
+                <span class="seg active">90d</span>
+                <span class="seg">1y</span>
+                <span class="seg">All</span>
+              </div>
+            </div>
+            <p class="option-note">Long-arc member count growth. Most "fitness business" narrative — are we growing? Slow-moving by nature, so trend windows are wider. Pairs well with 1B people-first.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 3. Today's Schedule placement                                    -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="3">
+    <div class="section-head">
+      <span class="section-num">3</span>
+      <h2>"Today's Schedule" placement</h2>
+    </div>
+    <p class="section-blurb">
+      Where the room-by-room calendar grid lives on the dashboard. The grid is the most info-dense
+      element on the page — placement decides how much real-estate it claims.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim3" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Full-width grid below KPIs</span>
+            <span class="option-label">3A</span>
+          </div>
+          <div class="option-body">
+            <div class="layout-stack">
+              <div class="layout-row kpi-row">KPI strip (5 cards)</div>
+              <div class="layout-row tall">Hero chart</div>
+              <div class="layout-row brand-marked">Today's Schedule (full-width room grid)</div>
+              <div class="layout-row muted">Tasks · Alerts · etc.</div>
+            </div>
+            <p class="option-note">Matches the inspiration. Schedule grid is a primary citizen. Holds 5–8 rooms comfortably with horizontal scroll past that. Front-desk + ops users see the whole day at a glance.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim3" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Side-rail list</span>
+            <span class="option-label">3B</span>
+          </div>
+          <div class="option-body">
+            <div class="layout-split">
+              <div class="left-stack">
+                <div class="layout-row kpi-row">KPI strip (5 cards)</div>
+                <div class="layout-row tall">Hero chart</div>
+                <div class="layout-row muted">Tasks · Alerts</div>
+              </div>
+              <div class="right-stack">
+                <div class="layout-row brand-marked" style="min-height: 100%;">Today's Schedule (compact list)</div>
+              </div>
+            </div>
+            <p class="option-note">Schedule as a compact list in the right rail (next 5–6 sessions). Saves vertical space. Loses the room-by-room visual. Works better for trainers who care about <em>their</em> day, not the whole gym.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim3" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Hidden behind a Schedule tab</span>
+            <span class="option-label">3C</span>
+          </div>
+          <div class="option-body">
+            <div class="layout-tabs">
+              <div class="tab-row">
+                <div class="tab active">Overview</div>
+                <div class="tab">Today's Schedule</div>
+                <div class="tab">Activity</div>
+              </div>
+              <div class="layout-row kpi-row">KPI strip (5 cards)</div>
+              <div class="layout-row tall">Hero chart</div>
+              <div class="layout-row muted">Tasks · Alerts · etc.</div>
+            </div>
+            <p class="option-note">Schedule is one tab among several on the dashboard. Most flexible — schedule lives there fully when you want it. Least "first thing you see" prominence. Risk: front-desk forgets to click it.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 4. Right-rail content                                            -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="4">
+    <div class="section-head">
+      <span class="section-num">4</span>
+      <h2>Right-rail content</h2>
+    </div>
+    <p class="section-blurb">
+      What lives in the narrow right column. Most apps use it for "things that need attention." Pick
+      which type of attention should dominate.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim4" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Upcoming Schedule</span>
+            <span class="option-label">4A</span>
+          </div>
+          <div class="option-body">
+            <div class="right-rail-demo">
+              <div class="stub-main">main content</div>
+              <div class="rail-content">
+                <div class="rail-title">UPCOMING</div>
+                <div class="rail-item"><div class="av"></div><div class="label">Yoga · 9:30</div></div>
+                <div class="rail-item"><div class="av b"></div><div class="label">PT · Amy</div></div>
+                <div class="rail-item"><div class="av c"></div><div class="label">Spin · 10:00</div></div>
+                <div class="rail-item"><div class="av"></div><div class="label">PT · Jordan</div></div>
+                <div class="rail-item"><div class="av b"></div><div class="label">HIIT · 11:30</div></div>
+              </div>
+            </div>
+            <p class="option-note">Time-ordered list of next sessions. Best for staff actively running today. Pairs naturally with 3A (full-width schedule below) for double coverage.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim4" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Tasks (admin to-dos)</span>
+            <span class="option-label">4B</span>
+          </div>
+          <div class="option-body">
+            <div class="right-rail-demo">
+              <div class="stub-main">main content</div>
+              <div class="rail-content">
+                <div class="rail-title">TASKS</div>
+                <div class="rail-item"><div class="av task done"></div><div class="label">Order towels</div></div>
+                <div class="rail-item"><div class="av task"></div><div class="label">Renew insurance</div></div>
+                <div class="rail-item"><div class="av task"></div><div class="label">Reply to Amy</div></div>
+                <div class="rail-item"><div class="av task"></div><div class="label">Schedule 1:1s</div></div>
+                <div class="rail-item"><div class="av task"></div><div class="label">Q1 review</div></div>
+              </div>
+            </div>
+            <p class="option-note">To-do list with checkboxes. Strong "I'm at my desk" mode. Best for owners/managers using the dashboard as a daily workspace. Loses utility for floor staff.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim4" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Alerts (urgent items)</span>
+            <span class="option-label">4C</span>
+          </div>
+          <div class="option-body">
+            <div class="right-rail-demo">
+              <div class="stub-main">main content</div>
+              <div class="rail-content">
+                <div class="rail-title">ALERTS · 3</div>
+                <div class="rail-item"><div class="av alert">!</div><div class="label">Pmt failed · 2</div></div>
+                <div class="rail-item"><div class="av alert">!</div><div class="label">Trial ending · 5</div></div>
+                <div class="rail-item"><div class="av alert">!</div><div class="label">Class &lt;3 ppl</div></div>
+                <div class="rail-item"><div class="av alert">!</div><div class="label">Trainer no-show</div></div>
+                <div class="rail-item"><div class="av alert">!</div><div class="label">Backup overdue</div></div>
+              </div>
+            </div>
+            <p class="option-note">Things needing attention NOW. Strong attention pull. Risk: empty rail when things are healthy. Best paired with notification email for offline staff.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim4" value="D">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Mixed (small section each)</span>
+            <span class="option-label">4D</span>
+          </div>
+          <div class="option-body">
+            <div class="right-rail-demo">
+              <div class="stub-main">main content</div>
+              <div class="rail-content">
+                <div class="rail-section">
+                  <div class="rail-title">NEXT</div>
+                  <div class="rail-item"><div class="av"></div><div class="label">Yoga · 9:30</div></div>
+                  <div class="rail-item"><div class="av b"></div><div class="label">PT · Amy</div></div>
+                </div>
+                <div class="rail-section">
+                  <div class="rail-title">TASKS · 5</div>
+                  <div class="rail-item"><div class="av task"></div><div class="label">Renew insurance</div></div>
+                </div>
+                <div class="rail-section">
+                  <div class="rail-title">ALERTS · 2</div>
+                  <div class="rail-item"><div class="av alert">!</div><div class="label">Pmt failed · 2</div></div>
+                </div>
+              </div>
+            </div>
+            <p class="option-note">A small block from each. Most comprehensive. Risk: sections too small to be useful. Best when there's room (large screens) or when nothing is dominant.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 5. Density                                                       -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="5">
+    <div class="section-head">
+      <span class="section-num">5</span>
+      <h2>Information density</h2>
+    </div>
+    <p class="section-blurb">
+      How much breathing room everything gets. Affects spacing scale, padding, and the number of
+      KPIs/rows that fit on a screen. Sets the tone for every page after dashboard.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim5" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Generous (warm)</span>
+            <span class="option-label">5A</span>
+          </div>
+          <div class="option-body">
+            <div class="density-demo generous">
+              <div class="kpi">
+                <div class="c"><div class="l">Revenue</div><div class="v">$126K</div></div>
+                <div class="c"><div class="l">Members</div><div class="v">1,250</div></div>
+                <div class="c"><div class="l">Visits</div><div class="v">47</div></div>
+              </div>
+              <div class="kpi">
+                <div class="c"><div class="l">Sessions</div><div class="v">8</div></div>
+                <div class="c"><div class="l">Tasks</div><div class="v">5</div></div>
+                <div class="c"><div class="l">Alerts</div><div class="v">3</div></div>
+              </div>
+            </div>
+            <p class="option-note">Matches the inspiration. Roomy 16–24px padding scale. Feels premium &amp; calm. Lower information-per-screen ratio. Best on bigger monitors / less data-dense workflows.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim5" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Compact (efficient)</span>
+            <span class="option-label">5B</span>
+          </div>
+          <div class="option-body">
+            <div class="density-demo compact">
+              <div class="kpi">
+                <div class="c"><div class="l">Revenue</div><div class="v">$126K</div></div>
+                <div class="c"><div class="l">Members</div><div class="v">1,250</div></div>
+                <div class="c"><div class="l">Visits</div><div class="v">47</div></div>
+              </div>
+              <div class="kpi">
+                <div class="c"><div class="l">Sessions</div><div class="v">8</div></div>
+                <div class="c"><div class="l">Tasks</div><div class="v">5</div></div>
+                <div class="c"><div class="l">Alerts</div><div class="v">3</div></div>
+              </div>
+            </div>
+            <p class="option-note">Linear / Airtable density. Tight 6–10px padding. More on every screen. Better for power-users running heavy operational workflows. Less "calm."</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim5" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">User toggle</span>
+            <span class="option-label">5C</span>
+          </div>
+          <div class="option-body">
+            <div class="density-demo">
+              <div class="toggle-bar">
+                <div class="toggle">
+                  <span class="seg">Compact</span>
+                  <span class="seg active">Comfortable</span>
+                  <span class="seg">Spacious</span>
+                </div>
+              </div>
+              <div class="density-demo generous" style="padding: 0;">
+                <div class="kpi">
+                  <div class="c"><div class="l">Revenue</div><div class="v">$126K</div></div>
+                  <div class="c"><div class="l">Members</div><div class="v">1,250</div></div>
+                  <div class="c"><div class="l">Visits</div><div class="v">47</div></div>
+                </div>
+              </div>
+            </div>
+            <p class="option-note">Default to Comfortable, but let each user pick. Persists in user prefs. Maximum flexibility, more code to maintain. Common in productivity tools (Notion, Linear).</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 6. Empty / first-day state                                       -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="6">
+    <div class="section-head">
+      <span class="section-num">6</span>
+      <h2>Empty / first-day state</h2>
+    </div>
+    <p class="section-blurb">
+      What a brand-new business sees when they log in before they have any members, transactions,
+      or activity. This is the first impression of the product after sign-up.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim6" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Illustrated empty state</span>
+            <span class="option-label">6A</span>
+          </div>
+          <div class="option-body">
+            <div class="empty-demo">
+              <div class="glyph">✦</div>
+              <div class="ed-title">Welcome to Fitquake</div>
+              <div class="ed-sub">Add your first members or import them from a spreadsheet to see your dashboard come alive.</div>
+              <div class="ed-cta-row">
+                <span class="ed-cta">Add a member</span>
+                <span class="ed-cta alt">Import CSV</span>
+              </div>
+            </div>
+            <p class="option-note">Clean, friendly. CTAs lead to the obvious first actions. No fake data — what you see is real. Risk: dashboard feels "empty" for too long until activity flows in.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim6" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Demo data with banner</span>
+            <span class="option-label">6B</span>
+          </div>
+          <div class="option-body">
+            <div class="empty-demo demo-data">
+              <div class="demo-banner">This is example data. Add real members to replace it.</div>
+              <div class="demo-kpis">
+                <div class="demo-cell"><div class="l">Revenue</div><div class="v">$12,000</div></div>
+                <div class="demo-cell"><div class="l">Members</div><div class="v">125</div></div>
+                <div class="demo-cell"><div class="l">Visits</div><div class="v">42</div></div>
+              </div>
+              <div class="demo-chart">
+                <div class="bar" style="height:30%"></div>
+                <div class="bar" style="height:50%"></div>
+                <div class="bar" style="height:42%"></div>
+                <div class="bar" style="height:65%"></div>
+                <div class="bar" style="height:55%"></div>
+                <div class="bar" style="height:78%"></div>
+                <div class="bar" style="height:62%"></div>
+                <div class="bar" style="height:85%"></div>
+              </div>
+            </div>
+            <p class="option-note">Shows what the dashboard "will" look like with realistic synthetic data. Reduces "is this thing on?" anxiety. Risk: confuses users who don't read banners; real numbers eventually look pale by comparison.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim6" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Minimal zeros with hints</span>
+            <span class="option-label">6C</span>
+          </div>
+          <div class="option-body">
+            <div class="empty-demo minimal">
+              <div class="min-cell">
+                <div class="left"><div class="l">Members</div><div class="v">0</div></div>
+                <div class="hint">+ Add member</div>
+              </div>
+              <div class="min-cell">
+                <div class="left"><div class="l">Revenue</div><div class="v">$0</div></div>
+                <div class="hint">+ Record a sale</div>
+              </div>
+              <div class="min-cell">
+                <div class="left"><div class="l">Sessions</div><div class="v">0</div></div>
+                <div class="hint">+ Schedule one</div>
+              </div>
+            </div>
+            <p class="option-note">Real KPI structure with zeros + inline action hints. Honest, no fake data. Each cell becomes its own onboarding CTA. Calm, low-effort. Best for tech-savvy users who want to see the actual UI right away.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+</div>
+
+<!-- ────────────────────────────────────────────────────────────── -->
+<!-- DECISION PANEL (sticky bottom)                                  -->
+<!-- ────────────────────────────────────────────────────────────── -->
+<aside id="decision-panel" aria-label="Your decision">
+  <div class="panel-col">
+    <div class="reviewer-row">
+      <h4 style="margin:0; min-width:auto;">REVIEWER</h4>
+      <input type="text" id="reviewer-name" placeholder="Your name (Craig, Mike, …)" autocomplete="name" />
+    </div>
+    <h4>YOUR PICKS</h4>
+    <div class="picks-row" id="picks-display"><span class="none">No picks yet — click an option above.</span></div>
+    <div class="progress-line" id="progress-line">0 of 6 chosen</div>
+  </div>
+  <div class="panel-col">
+    <h4>COMMENTS (optional)</h4>
+    <textarea id="comments" placeholder="Concerns, mix-ins, or anything worth noting (e.g., 'I picked 5A density but want 5C user-toggle on dense pages like members list')."></textarea>
+  </div>
+  <div class="actions">
+    <button id="copy-btn" class="primary" type="button">Copy decision</button>
+    <button id="reset-btn" class="ghost" type="button">Reset all</button>
+  </div>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  const ROUND_ID = "round-03-dashboard-layout";
+  const ROUND_TITLE = "Round 3 — Dashboard Layout & Widgets";
+  const TOTAL_DIMS = 6;
+  const STORAGE = {
+    picks: `fitquake-mocks:${ROUND_ID}:picks`,
+    comments: `fitquake-mocks:${ROUND_ID}:comments`,
+    reviewer: `fitquake-mocks:${ROUND_ID}:reviewer`,
+  };
+
+  const $picks = document.getElementById("picks-display");
+  const $progress = document.getElementById("progress-line");
+  const $comments = document.getElementById("comments");
+  const $reviewer = document.getElementById("reviewer-name");
+  const $copyBtn = document.getElementById("copy-btn");
+  const $resetBtn = document.getElementById("reset-btn");
+
+  function getCurrentPicks() {
+    const picks = {};
+    document.querySelectorAll('input[type="radio"]:checked').forEach((r) => {
+      const dim = r.name.replace("dim", "");
+      picks[dim] = r.value;
+    });
+    return picks;
+  }
+
+  function renderPicks() {
+    const picks = getCurrentPicks();
+    const ordered = [];
+    for (let i = 1; i <= TOTAL_DIMS; i++) {
+      if (picks[i]) ordered.push(`${i}${picks[i]}`);
+    }
+    if (ordered.length === 0) {
+      $picks.innerHTML = '<span class="none">No picks yet — click an option above.</span>';
+    } else {
+      $picks.textContent = ordered.join(", ");
+    }
+    $progress.textContent = `${ordered.length} of ${TOTAL_DIMS} chosen`;
+  }
+
+  function persist() {
+    const picks = getCurrentPicks();
+    localStorage.setItem(STORAGE.picks, JSON.stringify(picks));
+    localStorage.setItem(STORAGE.comments, $comments.value);
+    localStorage.setItem(STORAGE.reviewer, $reviewer.value);
+  }
+
+  function restore() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE.picks) || "{}");
+      Object.keys(saved).forEach((dim) => {
+        const value = saved[dim];
+        const radio = document.querySelector(`input[name="dim${dim}"][value="${value}"]`);
+        if (radio) radio.checked = true;
+      });
+      $comments.value = localStorage.getItem(STORAGE.comments) || "";
+      $reviewer.value = localStorage.getItem(STORAGE.reviewer) || "";
+    } catch (e) {}
+    renderPicks();
+  }
+
+  function buildClipboardText() {
+    const picks = getCurrentPicks();
+    const ordered = [];
+    const missing = [];
+    for (let i = 1; i <= TOTAL_DIMS; i++) {
+      if (picks[i]) ordered.push(`${i}${picks[i]}`);
+      else missing.push(`${i}`);
+    }
+    const reviewer = ($reviewer.value || "(anonymous)").trim();
+    const today = new Date().toISOString().slice(0, 10);
+    const comments = $comments.value.trim() || "(none)";
+    const missingNote = missing.length
+      ? `\nNot yet chosen: dimension(s) ${missing.join(", ")}`
+      : "";
+    return [
+      `FITQUAKE DESIGN — ${ROUND_TITLE.toUpperCase()}`,
+      `Reviewer: ${reviewer}`,
+      `Date: ${today}`,
+      "",
+      `Picks: ${ordered.length ? ordered.join(", ") : "(none)"}${missingNote}`,
+      "",
+      "Comments:",
+      comments,
+    ].join("\n");
+  }
+
+  async function copyDecision() {
+    const text = buildClipboardText();
+    try {
+      await navigator.clipboard.writeText(text);
+      $copyBtn.textContent = "Copied ✓";
+      $copyBtn.classList.add("copied");
+      setTimeout(() => {
+        $copyBtn.textContent = "Copy decision";
+        $copyBtn.classList.remove("copied");
+      }, 1800);
+    } catch (e) {
+      window.prompt("Copy to clipboard, then paste to Phil:", text);
+    }
+  }
+
+  function resetAll() {
+    if (!window.confirm("Clear all picks, comments, and reviewer name for this round?")) return;
+    document.querySelectorAll('input[type="radio"]:checked').forEach((r) => (r.checked = false));
+    $comments.value = "";
+    $reviewer.value = "";
+    localStorage.removeItem(STORAGE.picks);
+    localStorage.removeItem(STORAGE.comments);
+    localStorage.removeItem(STORAGE.reviewer);
+    renderPicks();
+  }
+
+  document.querySelectorAll('input[type="radio"]').forEach((r) => {
+    r.addEventListener("change", () => {
+      renderPicks();
+      persist();
+    });
+  });
+  $comments.addEventListener("input", persist);
+  $reviewer.addEventListener("input", persist);
+  $copyBtn.addEventListener("click", copyDecision);
+  $resetBtn.addEventListener("click", resetAll);
+
+  restore();
+})();
+</script>
+</body>
+</html>
