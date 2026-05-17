@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fitquake · Round 4 — Persona Dashboards</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --ink-3: #64748b;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --brand: #0d9488;
+    --brand-tint: #ccfbf1;
+    --brand-deep: #0E3F3B;
+    --accent-rev: #14b8a6;
+    --accent-people: #6366f1;
+    --accent-activity: #f59e0b;
+    --accent-member: #ec4899;
+    --radius: 10px;
+    --panel-h: 168px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body { padding-bottom: var(--panel-h); }
+  .page { max-width: 1280px; margin: 0 auto; padding: 48px 32px 96px; }
+
+  header.page-header { margin-bottom: 48px; }
+  header.page-header .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: 11px; font-weight: 600; color: var(--ink-3);
+  }
+  header.page-header .breadcrumb {
+    font-size: 13px; color: var(--ink-3); margin-bottom: 8px;
+  }
+  header.page-header .breadcrumb a { color: var(--brand); text-decoration: none; }
+  header.page-header .breadcrumb a:hover { text-decoration: underline; }
+  header.page-header h1 {
+    font-size: 34px; margin: 8px 0 12px;
+    letter-spacing: -0.02em; font-weight: 700;
+  }
+  header.page-header p {
+    margin: 0; color: var(--ink-2); max-width: 720px;
+    line-height: 1.55; font-size: 15px;
+  }
+  header.page-header .hint {
+    margin-top: 16px; padding: 14px 16px;
+    background: #ecfeff; border: 1px solid #a5f3fc;
+    border-radius: 8px; color: #155e75;
+    font-size: 14px; line-height: 1.5;
+  }
+  header.page-header .hint strong { color: #0e7490; }
+  header.page-header .credit {
+    display: block; margin-top: 10px;
+    font-size: 12px; color: #0e7490; font-style: italic;
+  }
+
+  section.dimension { margin-top: 56px; }
+  section.dimension .section-head {
+    display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px;
+  }
+  section.dimension .section-num {
+    width: 36px; height: 36px; border-radius: 999px;
+    background: var(--ink); color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
+  section.dimension h2 {
+    font-size: 22px; font-weight: 700; margin: 0; letter-spacing: -0.01em;
+  }
+  section.dimension .persona-badge {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 3px 9px; border-radius: 4px;
+    background: var(--brand-tint); color: var(--brand-deep);
+    margin-left: 6px; vertical-align: 2px;
+  }
+  section.dimension.trainer .section-num { background: var(--accent-rev); }
+  section.dimension.trainer .persona-badge { background: #ccfbf1; color: #134e4a; }
+  section.dimension.member .section-num { background: var(--accent-member); }
+  section.dimension.member .persona-badge { background: #fce7f3; color: #831843; }
+  section.dimension p.section-blurb {
+    color: var(--ink-2); margin: 4px 0 24px 50px;
+    font-size: 14px; line-height: 1.55; max-width: 760px;
+  }
+
+  .options {
+    display: grid; gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  }
+
+  /* ───── Native-radio picker wrapper ───── */
+  .opt-wrap {
+    display: block; cursor: pointer; position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .opt-wrap input[type="radio"] {
+    position: absolute; opacity: 0; pointer-events: none;
+  }
+  .option {
+    background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+    height: 100%;
+  }
+  .opt-wrap:hover .option {
+    border-color: var(--border-strong);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  }
+  .opt-wrap input:checked + .option {
+    border-color: var(--brand); border-width: 2px;
+    box-shadow: 0 0 0 4px var(--brand-tint), 0 4px 12px rgba(13, 148, 136, 0.12);
+  }
+  .opt-wrap input:focus-visible + .option {
+    outline: 2px solid var(--brand); outline-offset: 4px;
+  }
+  .checkmark {
+    position: absolute; top: 10px; right: 10px;
+    width: 26px; height: 26px; border-radius: 999px;
+    background: var(--brand); color: white;
+    display: none; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; z-index: 2;
+    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+  }
+  .opt-wrap input:checked ~ .checkmark { display: flex; }
+
+  .option-header {
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: #fafbfc;
+  }
+  .opt-wrap input:checked + .option .option-header {
+    background: var(--brand-tint); border-bottom-color: var(--brand);
+  }
+  .option-label {
+    font-weight: 700; font-size: 13px; letter-spacing: 0.04em;
+    background: var(--ink); color: white;
+    padding: 4px 8px; border-radius: 4px;
+  }
+  .opt-wrap input:checked + .option .option-label { background: var(--brand); }
+  .option-name { font-weight: 600; font-size: 14px; color: var(--ink); }
+  .option-body {
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 14px;
+    flex: 1;
+  }
+  .option-note {
+    font-size: 12px; color: var(--ink-3); line-height: 1.5;
+    margin-top: auto; padding-top: 8px; border-top: 1px dashed var(--border);
+  }
+
+  /* ───── KPI strip (5-cell 3+2 layout for admin/trainer, 4-cell 2+2 for member) ───── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    padding: 14px;
+    background: #f8fafc; border-radius: 8px;
+  }
+  .kpi-strip.five .kpi-cell:nth-child(1),
+  .kpi-strip.five .kpi-cell:nth-child(2),
+  .kpi-strip.five .kpi-cell:nth-child(3) { grid-column: span 2; }
+  .kpi-strip.five .kpi-cell:nth-child(4),
+  .kpi-strip.five .kpi-cell:nth-child(5) { grid-column: span 3; }
+  .kpi-strip.four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kpi-cell {
+    background: white; border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 3px;
+    min-width: 0;
+  }
+  .kpi-cell .lbl {
+    font-size: 10px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .kpi-cell .val {
+    font-size: 16px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em;
+  }
+  .kpi-cell .trend {
+    font-size: 10px; color: #059669; font-weight: 600; margin-top: 2px;
+  }
+  .kpi-cell .trend.warn { color: #dc2626; }
+  .kpi-cell .trend.neutral { color: var(--ink-3); }
+  .kpi-cell .icon-stripe {
+    height: 3px; border-radius: 2px; margin: -10px -12px 6px;
+  }
+  .kpi-cell.gym .icon-stripe { background: var(--accent-people); }
+  .kpi-cell.trainer .icon-stripe { background: var(--accent-rev); }
+  .kpi-cell.member .icon-stripe { background: var(--accent-member); }
+
+  /* ───── Decision panel (sticky bottom) ───── */
+  #decision-panel {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white; border-top: 2px solid var(--brand);
+    box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
+    padding: 16px 24px; z-index: 10;
+    display: grid; grid-template-columns: 1fr 1fr auto;
+    gap: 20px; align-items: start;
+    max-height: var(--panel-h);
+  }
+  #decision-panel .panel-col h4 {
+    margin: 0 0 6px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3);
+  }
+  #decision-panel .reviewer-row {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 10px;
+  }
+  #decision-panel input[type="text"] {
+    flex: 1; padding: 8px 10px;
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13px; font-family: inherit; color: var(--ink);
+  }
+  #decision-panel input[type="text"]:focus,
+  #decision-panel textarea:focus {
+    outline: 2px solid var(--brand); outline-offset: -2px;
+    border-color: var(--brand);
+  }
+  #decision-panel .picks-row {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px; color: var(--ink);
+    background: #f8fafc; border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px; line-height: 1.6;
+    min-height: 38px; word-break: break-word;
+  }
+  #decision-panel .picks-row .none {
+    color: var(--ink-3); font-style: italic; font-family: inherit;
+  }
+  #decision-panel textarea {
+    width: 100%; min-height: 86px;
+    padding: 8px 10px;
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13px; font-family: inherit; color: var(--ink);
+    resize: vertical;
+  }
+  #decision-panel .actions {
+    display: flex; flex-direction: column; gap: 8px; min-width: 200px;
+  }
+  #decision-panel button {
+    cursor: pointer; border: none;
+    padding: 10px 14px; border-radius: 6px;
+    font-size: 13px; font-weight: 600; font-family: inherit;
+    transition: background-color 120ms;
+  }
+  #decision-panel button.primary { background: var(--brand); color: white; }
+  #decision-panel button.primary:hover { background: #0f766e; }
+  #decision-panel button.primary.copied { background: #059669; }
+  #decision-panel button.ghost {
+    background: white; color: var(--ink-2); border: 1px solid var(--border);
+  }
+  #decision-panel button.ghost:hover { background: #f1f5f9; }
+  #decision-panel .progress-line {
+    font-size: 12px; color: var(--ink-3); text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    #decision-panel { grid-template-columns: 1fr; max-height: none; }
+    body { padding-bottom: 380px; }
+  }
+  @media (max-width: 700px) {
+    .page { padding: 28px 16px 64px; }
+    .options { grid-template-columns: 1fr; }
+    section.dimension p.section-blurb { margin-left: 0; }
+    header.page-header h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="breadcrumb"><a href="./">← All decisions</a></div>
+    <div class="eyebrow">Round 4 · Persona-specific Dashboards</div>
+    <h1>Pick the right metrics for each persona</h1>
+    <p>What "success" looks like differs by who's logging in. A gym manager cares about
+       member growth and churn; a trainer cares about MRR and utilization; a member cares about
+       their next class and account status. This round picks one KPI preset pack for each persona —
+       these become the default dashboards we ship.</p>
+    <div class="hint">
+      <strong>Three personas, three picks.</strong> Powered by Phase 6.5.H per-role widget
+      placement — your picks here seed the default role templates. Individual users can still
+      customize their layout later.
+      <span class="credit">↳ Round opened in response to Craig's persona-specific metrics feedback (Round 3 themes).</span>
+    </div>
+  </header>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 1. Gym admin (subscription gym manager)                          -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="1">
+    <div class="section-head">
+      <span class="section-num">1</span>
+      <h2>Gym admin home <span class="persona-badge">Gym manager / owner</span></h2>
+    </div>
+    <p class="section-blurb">
+      What an owner or manager sees first when they log in. This is the "Is the business healthy?"
+      glance. Heavy users: front-desk managers, regional ops, owners. ChatGPT recommendation
+      (Craig's research): Growth-focused pack.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Growth (ChatGPT-recommended)</span>
+            <span class="option-label">1A</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip five">
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">Net Growth</div><div class="val">+12</div><div class="trend">vs +8 last mo</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">Churn</div><div class="val">3.2%</div><div class="trend">↓ 0.4pt</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">MRR</div><div class="val">$126K</div><div class="trend">↑ 4.2%</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">Visits / Member</div><div class="val">8.4</div><div class="trend">↑ 0.6</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">Revenue / Member</div><div class="val">$98</div><div class="trend">↑ $4</div></div>
+            </div>
+            <p class="option-note">Net growth and churn lead — the SaaS playbook for subscription businesses. Visits/member is a leading indicator of churn (engagement drops before cancellations). Rev/member captures upsell health (PT, retail).</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Health (operations + retention)</span>
+            <span class="option-label">1B</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip five">
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">Active Members</div><div class="val">1,250</div><div class="trend">↑ 12</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">MRR</div><div class="val">$126K</div><div class="trend">↑ 4.2%</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">PT Utilization</div><div class="val">68%</div><div class="trend">↑ 2.1pt</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">30d Retention</div><div class="val">92%</div><div class="trend neutral">flat</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">90d Retention</div><div class="val">78%</div><div class="trend">↑ 1.2pt</div></div>
+            </div>
+            <p class="option-note">Counts + utilization + retention windows. Less "growth-y," more "are we running well?" Two retention windows (30d / 90d) catch both new-member dropoff and longer-term loyalty.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Today (operational)</span>
+            <span class="option-label">1C</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip five">
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">Check-ins Today</div><div class="val">47</div><div class="trend">vs 42 yest.</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">Bookings</div><div class="val">31</div><div class="trend">88% capacity</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">Cash Today</div><div class="val">$3.2K</div><div class="trend">↑ 12%</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">Tasks Due</div><div class="val">5</div><div class="trend warn">2 overdue</div></div>
+              <div class="kpi-cell gym"><div class="icon-stripe"></div><div class="lbl">Alerts</div><div class="val">3</div><div class="trend warn">1 billing</div></div>
+            </div>
+            <p class="option-note">"What's happening RIGHT NOW" framing. Best for front-desk managers running the floor. Growth + retention trends would live one layer deeper (Reports tab).</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 2. Trainer (individual or staff trainer)                         -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension trainer" data-dim="2">
+    <div class="section-head">
+      <span class="section-num">2</span>
+      <h2>Trainer home <span class="persona-badge">Independent / staff trainer</span></h2>
+    </div>
+    <p class="section-blurb">
+      What a trainer sees first. Their lens is their book of business — clients, sessions, income.
+      Independent trainers want to know they're growing/keeping clients; staff trainers want today's
+      schedule + their commission. ChatGPT recommendation (Craig's research): Income pack.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim2" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Income (ChatGPT-recommended)</span>
+            <span class="option-label">2A</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip five">
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">MRR</div><div class="val">$4,800</div><div class="trend">↑ $320</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Revenue / Client</div><div class="val">$120</div><div class="trend">↑ $8</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Sessions / Mo</div><div class="val">32</div><div class="trend">↑ 4</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Earnings MTD</div><div class="val">$3,840</div><div class="trend">on track</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Utilization</div><div class="val">78%</div><div class="trend">↑ 6pt</div></div>
+            </div>
+            <p class="option-note">Income-forward. Best for independents who treat trainer work as their primary income. Utilization is leading indicator of capacity ("can I take more clients?").</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim2" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Retention (client relationships)</span>
+            <span class="option-label">2B</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip five">
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Active Clients</div><div class="val">24</div><div class="trend">↑ 2 this mo</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Avg Lifetime</div><div class="val">14 mo</div><div class="trend">↑ 1.5</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">No-Show Rate</div><div class="val">4.2%</div><div class="trend">↓ 0.8pt</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Renewals Due</div><div class="val">5</div><div class="trend warn">2 this wk</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Engaged %</div><div class="val">88%</div><div class="trend">↑ 4pt</div></div>
+            </div>
+            <p class="option-note">Client-relationship lens. Avg lifetime + no-show rate signal whether clients are sticking and showing up. Renewals due is the "this week" action item. Best for trainers focused on consultative coaching.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim2" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Today (sessions + earnings)</span>
+            <span class="option-label">2C</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip five">
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Sessions Today</div><div class="val">6</div><div class="trend">2 done</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Next Session</div><div class="val">9:30</div><div class="trend">Amy · Str</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Earnings Today</div><div class="val">$720</div><div class="trend">$240 collected</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Follow-ups</div><div class="val">3</div><div class="trend warn">2 overdue</div></div>
+              <div class="kpi-cell trainer"><div class="icon-stripe"></div><div class="lbl">Earnings MTD</div><div class="val">$3.8K</div><div class="trend">on track</div></div>
+            </div>
+            <p class="option-note">"What am I doing today" framing. Best for staff trainers running back-to-back sessions, who care about today's schedule and today's commission. Long-arc growth lives in Income (2A) for them too if they want it.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 3. Member portal                                                  -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension member" data-dim="3">
+    <div class="section-head">
+      <span class="section-num">3</span>
+      <h2>Member portal home <span class="persona-badge">Gym member · self-service</span></h2>
+    </div>
+    <p class="section-blurb">
+      What a member sees when they log into their portal. Intentionally lighter — only 4 KPIs since
+      members aren't running operations. The framing decides whether the portal feels like a service
+      app (Activity), a banking app (Account), or a fitness journey app (Achievement).
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim3" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Activity (engagement-forward)</span>
+            <span class="option-label">3A</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip four">
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">Next Class</div><div class="val">Tomorrow 9:30</div><div class="trend">Yoga · Studio B</div></div>
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">Visits This Mo</div><div class="val">12</div><div class="trend">on pace for 18</div></div>
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">PT Remaining</div><div class="val">4 / 10</div><div class="trend">refresh May 28</div></div>
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">Monthly Goal</div><div class="val">64%</div><div class="trend">on track</div></div>
+            </div>
+            <p class="option-note">"What's next and how am I doing?" mindset. Pairs naturally with Round 1's locked 6A (next-class hero). Risk: feels like a fitness-tracker; some members just want to manage billing.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim3" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Account (utility-forward)</span>
+            <span class="option-label">3B</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip four">
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">Membership</div><div class="val">Gold</div><div class="trend">Active</div></div>
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">Next Bill</div><div class="val">May 28</div><div class="trend">$89.00</div></div>
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">PT Remaining</div><div class="val">4 / 10</div><div class="trend">expires Jun 15</div></div>
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">Recent Classes</div><div class="val">6</div><div class="trend">last 30 days</div></div>
+            </div>
+            <p class="option-note">"What's my status?" mindset. Membership tier, next bill, sessions remaining — banking-app feel. Best for older / less-tech-engaged members who treat the portal as account management.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim3" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Achievement (motivation-forward)</span>
+            <span class="option-label">3C</span>
+          </div>
+          <div class="option-body">
+            <div class="kpi-strip four">
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">Streak</div><div class="val">12 days</div><div class="trend">↑ personal best</div></div>
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">PRs This Mo</div><div class="val">3</div><div class="trend">↑ 1</div></div>
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">Visits Goal</div><div class="val">64%</div><div class="trend">12 of 18</div></div>
+              <div class="kpi-cell member"><div class="icon-stripe"></div><div class="lbl">Total Classes</div><div class="val">47</div><div class="trend">all-time</div></div>
+            </div>
+            <p class="option-note">"Look how far you've come" mindset. Gamified. Strongest for fitness-app-native members who measure themselves. Hardest to support — needs PR tracking, streak logic, goal-setting UI in the backend.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+</div>
+
+<!-- ────────────────────────────────────────────────────────────── -->
+<!-- DECISION PANEL (sticky bottom)                                  -->
+<!-- ────────────────────────────────────────────────────────────── -->
+<aside id="decision-panel" aria-label="Your decision">
+  <div class="panel-col">
+    <div class="reviewer-row">
+      <h4 style="margin:0; min-width:auto;">REVIEWER</h4>
+      <input type="text" id="reviewer-name" placeholder="Your name (Craig, Mike, …)" autocomplete="name" />
+    </div>
+    <h4>YOUR PICKS</h4>
+    <div class="picks-row" id="picks-display"><span class="none">No picks yet — click an option above.</span></div>
+    <div class="progress-line" id="progress-line">0 of 3 chosen</div>
+  </div>
+  <div class="panel-col">
+    <h4>COMMENTS (optional)</h4>
+    <textarea id="comments" placeholder="Anything worth noting — e.g., 'love 1A but swap PT Util for Today's Sessions'; or 'we should support 1A on first login then learn the user's preferred lens'."></textarea>
+  </div>
+  <div class="actions">
+    <button id="copy-btn" class="primary" type="button">Copy decision</button>
+    <button id="reset-btn" class="ghost" type="button">Reset all</button>
+  </div>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  const ROUND_ID = "round-04-persona-dashboards";
+  const ROUND_TITLE = "Round 4 — Persona-specific Dashboards";
+  const TOTAL_DIMS = 3;
+  const STORAGE = {
+    picks: `fitquake-mocks:${ROUND_ID}:picks`,
+    comments: `fitquake-mocks:${ROUND_ID}:comments`,
+    reviewer: `fitquake-mocks:${ROUND_ID}:reviewer`,
+  };
+
+  const $picks = document.getElementById("picks-display");
+  const $progress = document.getElementById("progress-line");
+  const $comments = document.getElementById("comments");
+  const $reviewer = document.getElementById("reviewer-name");
+  const $copyBtn = document.getElementById("copy-btn");
+  const $resetBtn = document.getElementById("reset-btn");
+
+  function getCurrentPicks() {
+    const picks = {};
+    document.querySelectorAll('input[type="radio"]:checked').forEach((r) => {
+      const dim = r.name.replace("dim", "");
+      picks[dim] = r.value;
+    });
+    return picks;
+  }
+
+  function renderPicks() {
+    const picks = getCurrentPicks();
+    const ordered = [];
+    for (let i = 1; i <= TOTAL_DIMS; i++) {
+      if (picks[i]) ordered.push(`${i}${picks[i]}`);
+    }
+    if (ordered.length === 0) {
+      $picks.innerHTML = '<span class="none">No picks yet — click an option above.</span>';
+    } else {
+      $picks.textContent = ordered.join(", ");
+    }
+    $progress.textContent = `${ordered.length} of ${TOTAL_DIMS} chosen`;
+  }
+
+  function persist() {
+    const picks = getCurrentPicks();
+    localStorage.setItem(STORAGE.picks, JSON.stringify(picks));
+    localStorage.setItem(STORAGE.comments, $comments.value);
+    localStorage.setItem(STORAGE.reviewer, $reviewer.value);
+  }
+
+  function restore() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE.picks) || "{}");
+      Object.keys(saved).forEach((dim) => {
+        const value = saved[dim];
+        const radio = document.querySelector(`input[name="dim${dim}"][value="${value}"]`);
+        if (radio) radio.checked = true;
+      });
+      $comments.value = localStorage.getItem(STORAGE.comments) || "";
+      $reviewer.value = localStorage.getItem(STORAGE.reviewer) || "";
+    } catch (e) {}
+    renderPicks();
+  }
+
+  function buildClipboardText() {
+    const picks = getCurrentPicks();
+    const ordered = [];
+    const missing = [];
+    for (let i = 1; i <= TOTAL_DIMS; i++) {
+      if (picks[i]) ordered.push(`${i}${picks[i]}`);
+      else missing.push(`${i}`);
+    }
+    const reviewer = ($reviewer.value || "(anonymous)").trim();
+    const today = new Date().toISOString().slice(0, 10);
+    const comments = $comments.value.trim() || "(none)";
+    const missingNote = missing.length
+      ? `\nNot yet chosen: dimension(s) ${missing.join(", ")}`
+      : "";
+    return [
+      `FITQUAKE DESIGN — ${ROUND_TITLE.toUpperCase()}`,
+      `Reviewer: ${reviewer}`,
+      `Date: ${today}`,
+      "",
+      `Picks: ${ordered.length ? ordered.join(", ") : "(none)"}${missingNote}`,
+      "",
+      "Comments:",
+      comments,
+    ].join("\n");
+  }
+
+  async function copyDecision() {
+    const text = buildClipboardText();
+    try {
+      await navigator.clipboard.writeText(text);
+      $copyBtn.textContent = "Copied ✓";
+      $copyBtn.classList.add("copied");
+      setTimeout(() => {
+        $copyBtn.textContent = "Copy decision";
+        $copyBtn.classList.remove("copied");
+      }, 1800);
+    } catch (e) {
+      window.prompt("Copy to clipboard, then paste to Phil:", text);
+    }
+  }
+
+  function resetAll() {
+    if (!window.confirm("Clear all picks, comments, and reviewer name for this round?")) return;
+    document.querySelectorAll('input[type="radio"]:checked').forEach((r) => (r.checked = false));
+    $comments.value = "";
+    $reviewer.value = "";
+    localStorage.removeItem(STORAGE.picks);
+    localStorage.removeItem(STORAGE.comments);
+    localStorage.removeItem(STORAGE.reviewer);
+    renderPicks();
+  }
+
+  document.querySelectorAll('input[type="radio"]').forEach((r) => {
+    r.addEventListener("change", () => {
+      renderPicks();
+      persist();
+    });
+  });
+  $comments.addEventListener("input", persist);
+  $reviewer.addEventListener("input", persist);
+  $copyBtn.addEventListener("click", copyDecision);
+  $resetBtn.addEventListener("click", resetAll);
+
+  restore();
+})();
+</script>
+</body>
+</html>
