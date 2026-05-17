@@ -1,0 +1,1325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fitquake · Round 2 — Login &amp; First Load</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --ink-3: #64748b;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --brand: #0d9488;
+    --brand-tint: #ccfbf1;
+    --brand-deep: #0E3F3B;
+    --radius: 10px;
+    --panel-h: 168px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body { padding-bottom: var(--panel-h); }
+  .page { max-width: 1280px; margin: 0 auto; padding: 48px 32px 96px; }
+
+  header.page-header { margin-bottom: 48px; }
+  header.page-header .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+  header.page-header .breadcrumb {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  header.page-header .breadcrumb a {
+    color: var(--brand);
+    text-decoration: none;
+  }
+  header.page-header .breadcrumb a:hover { text-decoration: underline; }
+  header.page-header h1 {
+    font-size: 34px;
+    margin: 8px 0 12px;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  header.page-header p {
+    margin: 0;
+    color: var(--ink-2);
+    max-width: 720px;
+    line-height: 1.55;
+    font-size: 15px;
+  }
+  header.page-header .hint {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: #ecfeff;
+    border: 1px solid #a5f3fc;
+    border-radius: 8px;
+    color: #155e75;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  header.page-header .hint strong { color: #0e7490; }
+
+  section.dimension { margin-top: 56px; }
+  section.dimension .section-head {
+    display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px;
+  }
+  section.dimension .section-num {
+    width: 36px; height: 36px; border-radius: 999px;
+    background: var(--ink); color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
+  section.dimension h2 {
+    font-size: 22px; font-weight: 700; margin: 0; letter-spacing: -0.01em;
+  }
+  section.dimension p.section-blurb {
+    color: var(--ink-2); margin: 4px 0 24px 50px;
+    font-size: 14px; line-height: 1.55; max-width: 760px;
+  }
+
+  .options {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  /* ───── Native-radio picker wrapper ───── */
+  .opt-wrap {
+    display: block; cursor: pointer; position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .opt-wrap input[type="radio"] {
+    position: absolute; opacity: 0; pointer-events: none;
+  }
+  .option {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+    height: 100%;
+  }
+  .opt-wrap:hover .option {
+    border-color: var(--border-strong);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  }
+  .opt-wrap input:checked + .option {
+    border-color: var(--brand);
+    border-width: 2px;
+    box-shadow: 0 0 0 4px var(--brand-tint), 0 4px 12px rgba(13, 148, 136, 0.12);
+  }
+  .opt-wrap input:focus-visible + .option {
+    outline: 2px solid var(--brand); outline-offset: 4px;
+  }
+  .checkmark {
+    position: absolute; top: 10px; right: 10px;
+    width: 26px; height: 26px; border-radius: 999px;
+    background: var(--brand); color: white;
+    display: none; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; z-index: 2;
+    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+  }
+  .opt-wrap input:checked ~ .checkmark { display: flex; }
+
+  .option-header {
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: #fafbfc;
+  }
+  .opt-wrap input:checked + .option .option-header {
+    background: var(--brand-tint); border-bottom-color: var(--brand);
+  }
+  .option-label {
+    font-weight: 700; font-size: 13px; letter-spacing: 0.04em;
+    background: var(--ink); color: white;
+    padding: 4px 8px; border-radius: 4px;
+  }
+  .opt-wrap input:checked + .option .option-label { background: var(--brand); }
+  .option-name { font-weight: 600; font-size: 14px; color: var(--ink); }
+  .option-body {
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 14px;
+    flex: 1;
+  }
+  .option-note {
+    font-size: 12px; color: var(--ink-3); line-height: 1.5;
+    margin-top: auto; padding-top: 8px; border-top: 1px dashed var(--border);
+  }
+
+  /* ───── Browser-frame preview ───── */
+  .browser-frame {
+    border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+    background: white;
+  }
+  .browser-frame .bf-bar {
+    display: flex; align-items: center; gap: 4px;
+    padding: 6px 8px; background: #f1f5f9;
+    border-bottom: 1px solid var(--border);
+  }
+  .browser-frame .bf-bar .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ink-3); opacity: 0.4;
+  }
+  .browser-frame .bf-bar .url {
+    margin-left: 8px; font-size: 9px;
+    color: var(--ink-3); font-family: ui-monospace, monospace;
+  }
+  .browser-frame .bf-body { min-height: 180px; }
+
+  /* ───── 1. Login layout previews ───── */
+  .login-split { display: grid; grid-template-columns: 1fr 1fr; min-height: 180px; }
+  .login-split .lp-brand {
+    background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+    color: white; padding: 18px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .login-split .lp-brand .logo {
+    font-weight: 800; letter-spacing: 0.1em; font-size: 13px;
+  }
+  .login-split .lp-brand .pitch {
+    font-size: 11px; opacity: 0.9; line-height: 1.4;
+    margin-top: auto;
+  }
+  .login-split .lp-brand .bar {
+    height: 4px; background: rgba(255,255,255,0.35); border-radius: 999px;
+    width: 70%; margin: 2px 0;
+  }
+  .login-split .lp-brand .bar.short { width: 45%; }
+  .login-split .lp-form {
+    background: white; padding: 18px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+    justify-content: center;
+  }
+
+  .login-centered {
+    background: linear-gradient(135deg, #f0fdfa 0%, #f1f5f9 100%);
+    padding: 22px 18px; min-height: 180px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .login-centered .card {
+    background: white; padding: 18px 16px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(15,23,42,0.04), 0 12px 32px rgba(15,23,42,0.08);
+    width: 80%; max-width: 220px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .login-centered .card .logo {
+    font-weight: 800; font-size: 12px; letter-spacing: 0.1em;
+    color: var(--brand-deep); text-align: center; margin-bottom: 4px;
+  }
+
+  .login-minimal {
+    background: white; padding: 22px 18px; min-height: 180px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 8px;
+  }
+  .login-minimal .logo {
+    font-weight: 800; font-size: 12px; letter-spacing: 0.1em;
+    color: var(--brand-deep); margin-bottom: 12px;
+  }
+  .login-minimal .form-area {
+    width: 80%; max-width: 220px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .login-bleed {
+    background: var(--brand-deep);
+    padding: 22px 18px; min-height: 180px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .login-bleed .card {
+    background: white; padding: 18px 16px; border-radius: 10px;
+    width: 85%; max-width: 220px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .login-bleed .card .logo {
+    font-weight: 800; font-size: 12px; letter-spacing: 0.1em;
+    color: var(--brand-deep); text-align: center; margin-bottom: 4px;
+  }
+
+  /* Generic form-stubs for login previews */
+  .ip-stub {
+    height: 18px; border-radius: 4px;
+    background: #f1f5f9; border: 1px solid var(--border);
+  }
+  .ip-stub.dark { background: rgba(255,255,255,0.15); border-color: transparent; }
+  .btn-stub {
+    height: 22px; border-radius: 5px;
+    background: var(--brand); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700;
+  }
+  .btn-stub.alt { background: white; color: var(--brand); border: 1px solid var(--brand); }
+  .text-link {
+    font-size: 8px; color: var(--brand); text-align: center;
+    text-decoration: underline;
+  }
+  .label-stub {
+    height: 7px; width: 50%; border-radius: 3px;
+    background: var(--ink-3); opacity: 0.4;
+  }
+
+  /* ───── 2. Loading / splash previews ───── */
+  .loading-splash {
+    background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+    color: white; min-height: 180px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 10px;
+  }
+  .loading-splash .big-logo { font-weight: 900; font-size: 20px; letter-spacing: 0.1em; }
+  .loading-splash .tagline { font-size: 10px; opacity: 0.85; }
+  .loading-spinner {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.25);
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+    margin-top: 6px;
+  }
+
+  .loading-minimal {
+    background: white; min-height: 180px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 14px;
+  }
+  .loading-minimal .small-logo {
+    font-weight: 800; font-size: 12px; letter-spacing: 0.1em;
+    color: var(--brand-deep);
+  }
+  .loading-spinner.dark {
+    border: 3px solid rgba(13, 148, 136, 0.18);
+    border-top-color: var(--brand);
+  }
+
+  .loading-skeleton {
+    background: #f8fafc; min-height: 180px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 12px;
+  }
+  .loading-skeleton .skel-sidebar {
+    background: var(--brand-deep);
+    border-radius: 6px;
+    display: flex; flex-direction: column;
+    padding: 8px 6px; gap: 6px;
+  }
+  .loading-skeleton .skel-sidebar .si {
+    height: 14px; border-radius: 3px;
+    background: rgba(255,255,255,0.1);
+  }
+  .loading-skeleton .skel-sidebar .si.active { background: rgba(255,255,255,0.3); }
+  .loading-skeleton .skel-content {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .loading-skeleton .skel-kpi-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  }
+  .loading-skeleton .skel-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: 5px; padding: 8px; height: 38px;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .loading-skeleton .skel-card-big {
+    background: white; border: 1px solid var(--border);
+    border-radius: 5px; height: 86px;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+  /* ───── 3. Error display previews ───── */
+  .err-demo {
+    background: #f8fafc; border-radius: 8px; padding: 16px;
+    min-height: 180px;
+    display: flex; flex-direction: column; gap: 6px;
+    justify-content: center; position: relative; overflow: hidden;
+  }
+  .err-demo .form {
+    background: white; border-radius: 6px; padding: 12px;
+    display: flex; flex-direction: column; gap: 6px;
+    border: 1px solid var(--border);
+  }
+  .err-demo .form .label {
+    font-size: 9px; color: var(--ink-3); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .err-demo .form .input {
+    height: 22px; background: white;
+    border: 1px solid var(--border-strong); border-radius: 4px;
+  }
+  .err-demo .form .input.bad { border-color: #dc2626; border-width: 1.5px; }
+  .err-demo .form .btn {
+    margin-top: 4px; height: 24px;
+    background: var(--brand); color: white;
+    border-radius: 5px; font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .err-demo .err-text-inline {
+    font-size: 9px; color: #dc2626; font-weight: 600;
+    margin-top: -2px;
+  }
+  .err-demo .err-banner {
+    background: #fef2f2; border: 1px solid #fecaca;
+    color: #991b1b; font-size: 9px; font-weight: 600;
+    padding: 6px 8px; border-radius: 4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .err-demo .err-banner::before {
+    content: "!"; width: 14px; height: 14px;
+    background: #dc2626; color: white; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 900;
+  }
+  .err-demo .err-toast {
+    position: absolute; top: 10px; right: 10px;
+    background: white; border-left: 3px solid #dc2626;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.12);
+    padding: 8px 10px; border-radius: 5px;
+    font-size: 9px; font-weight: 600; color: var(--ink);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .err-demo .err-toast::before {
+    content: "✕"; width: 14px; height: 14px;
+    background: #dc2626; color: white; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 700;
+  }
+
+  /* ───── 4. Forgot password placement previews ───── */
+  .forgot-demo {
+    background: #f8fafc; border-radius: 8px; padding: 16px;
+    min-height: 180px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .forgot-demo .form {
+    background: white; border-radius: 6px; padding: 14px;
+    display: flex; flex-direction: column; gap: 8px;
+    border: 1px solid var(--border);
+    width: 90%; max-width: 240px;
+  }
+  .forgot-demo .form .field { display: flex; flex-direction: column; gap: 4px; }
+  .forgot-demo .form .field .label {
+    font-size: 9px; color: var(--ink-3); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .forgot-demo .form .field .input {
+    height: 22px; background: white;
+    border: 1px solid var(--border-strong); border-radius: 4px;
+  }
+  .forgot-demo .form .field .field-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: -2px;
+  }
+  .forgot-demo .form .forgot-tiny {
+    font-size: 8px; color: var(--brand); font-weight: 600;
+  }
+  .forgot-demo .form .btn-row {
+    display: flex; gap: 6px; margin-top: 4px;
+  }
+  .forgot-demo .form .btn {
+    flex: 1; height: 24px;
+    background: var(--brand); color: white;
+    border-radius: 5px; font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .forgot-demo .form .btn.ghost {
+    background: white; color: var(--brand);
+    border: 1px solid var(--brand);
+  }
+  .forgot-demo .form .footer-link {
+    text-align: center; font-size: 9px;
+    color: var(--brand); font-weight: 600;
+    border-top: 1px dashed var(--border);
+    padding-top: 8px; margin-top: 4px;
+  }
+
+  /* ───── 5. Multi-tenant business switcher previews ───── */
+  .biz-flow {
+    background: #f8fafc; border-radius: 8px; padding: 14px;
+    min-height: 200px;
+    display: flex; flex-direction: column; gap: 8px;
+    justify-content: center;
+  }
+  .biz-flow .step {
+    display: grid;
+    grid-template-columns: 60px 18px 1fr;
+    gap: 6px; align-items: center;
+  }
+  .biz-flow .step .screen {
+    background: white; border: 1px solid var(--border);
+    border-radius: 4px; padding: 5px 4px;
+    height: 38px; display: flex; flex-direction: column;
+    justify-content: center; gap: 2px;
+  }
+  .biz-flow .step .screen .ti {
+    height: 4px; width: 60%; background: var(--brand-deep);
+    border-radius: 2px;
+  }
+  .biz-flow .step .screen .ti.small { width: 35%; background: var(--ink-3); opacity: 0.4; }
+  .biz-flow .step .screen .ti.brand { background: var(--brand); }
+  .biz-flow .step .arrow {
+    color: var(--ink-3); font-size: 14px; text-align: center;
+    font-weight: 700;
+  }
+  .biz-flow .step .label {
+    font-size: 10px; color: var(--ink-2); line-height: 1.3;
+  }
+  .biz-flow .step .label strong { color: var(--ink); }
+
+  .biz-screen-detail {
+    background: white; border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px;
+    margin-top: 4px;
+  }
+  .biz-screen-detail .biz-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 6px; border-radius: 3px;
+    font-size: 10px; color: var(--ink-2);
+  }
+  .biz-screen-detail .biz-row.active {
+    background: var(--brand-tint); color: var(--brand-deep); font-weight: 600;
+  }
+  .biz-screen-detail .biz-row .bullet {
+    width: 16px; height: 16px; border-radius: 4px;
+    background: var(--brand-tint); color: var(--brand-deep);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 9px;
+  }
+  .biz-screen-detail .biz-row.active .bullet {
+    background: var(--brand); color: white;
+  }
+
+  .biz-dropdown {
+    background: white; border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px;
+    margin-top: 4px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 10px;
+  }
+  .biz-dropdown .label-line {
+    color: var(--ink-3); font-size: 8px;
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+  }
+  .biz-dropdown .biz-name {
+    color: var(--ink); font-weight: 700; margin-top: 2px;
+  }
+  .biz-dropdown .chevron { color: var(--ink-3); font-size: 12px; }
+
+  /* ───── Decision panel (sticky bottom) ───── */
+  #decision-panel {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white;
+    border-top: 2px solid var(--brand);
+    box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
+    padding: 16px 24px; z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 20px; align-items: start;
+    max-height: var(--panel-h);
+  }
+  #decision-panel .panel-col h4 {
+    margin: 0 0 6px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3);
+  }
+  #decision-panel .reviewer-row {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 10px;
+  }
+  #decision-panel input[type="text"] {
+    flex: 1; padding: 8px 10px;
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13px; font-family: inherit; color: var(--ink);
+  }
+  #decision-panel input[type="text"]:focus,
+  #decision-panel textarea:focus {
+    outline: 2px solid var(--brand); outline-offset: -2px;
+    border-color: var(--brand);
+  }
+  #decision-panel .picks-row {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px; color: var(--ink);
+    background: #f8fafc; border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px; line-height: 1.6;
+    min-height: 38px; word-break: break-word;
+  }
+  #decision-panel .picks-row .none {
+    color: var(--ink-3); font-style: italic; font-family: inherit;
+  }
+  #decision-panel textarea {
+    width: 100%; min-height: 86px;
+    padding: 8px 10px;
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13px; font-family: inherit; color: var(--ink);
+    resize: vertical;
+  }
+  #decision-panel .actions {
+    display: flex; flex-direction: column; gap: 8px; min-width: 200px;
+  }
+  #decision-panel button {
+    cursor: pointer; border: none;
+    padding: 10px 14px; border-radius: 6px;
+    font-size: 13px; font-weight: 600; font-family: inherit;
+    transition: background-color 120ms;
+  }
+  #decision-panel button.primary { background: var(--brand); color: white; }
+  #decision-panel button.primary:hover { background: #0f766e; }
+  #decision-panel button.primary.copied { background: #059669; }
+  #decision-panel button.ghost {
+    background: white; color: var(--ink-2); border: 1px solid var(--border);
+  }
+  #decision-panel button.ghost:hover { background: #f1f5f9; }
+  #decision-panel .progress-line {
+    font-size: 12px; color: var(--ink-3); text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    #decision-panel { grid-template-columns: 1fr; max-height: none; }
+    body { padding-bottom: 380px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="breadcrumb"><a href="./">← All decisions</a></div>
+    <div class="eyebrow">Round 2 · Login &amp; First Load</div>
+    <h1>Pick how the very first screens feel</h1>
+    <p>This round shapes the login page, the loading/splash state, error display, password-recovery
+       entry-point, and how a user picks which business they're working in. These are the very first
+       surfaces a user sees, so they set the tone before any dashboard content loads.</p>
+    <div class="hint">
+      <strong>Five dimensions, ~5 minutes.</strong> Your picks are saved in your browser as you go,
+      so you can leave and come back. When you're done, hit Copy decision at the bottom.
+    </div>
+  </header>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 1. Login layout                                                  -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="1">
+    <div class="section-head">
+      <span class="section-num">1</span>
+      <h2>Login page layout</h2>
+    </div>
+    <p class="section-blurb">
+      The arrangement and visual weight of the login surface. Whatever we pick gets carried through
+      sign-up, password-reset, and other unauthenticated screens for consistency.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Split-screen branded</span>
+            <span class="option-label">1A</span>
+          </div>
+          <div class="option-body">
+            <div class="browser-frame">
+              <div class="bf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">app.fitquake.com/login</span></div>
+              <div class="bf-body login-split">
+                <div class="lp-brand">
+                  <div class="logo">FITQUAKE</div>
+                  <div class="bar"></div>
+                  <div class="bar short"></div>
+                  <div class="pitch">Modern gym management for the next generation.</div>
+                </div>
+                <div class="lp-form">
+                  <div class="label-stub"></div>
+                  <div class="ip-stub"></div>
+                  <div class="label-stub"></div>
+                  <div class="ip-stub"></div>
+                  <div class="btn-stub">Sign in</div>
+                </div>
+              </div>
+            </div>
+            <p class="option-note">Brand panel on the left holds the wordmark and a pitch line. Form sits on the right.
+              Classic SaaS, lots of brand presence on a screen people see daily.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Centered card on soft bg</span>
+            <span class="option-label">1B</span>
+          </div>
+          <div class="option-body">
+            <div class="browser-frame">
+              <div class="bf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">app.fitquake.com/login</span></div>
+              <div class="bf-body login-centered">
+                <div class="card">
+                  <div class="logo">FITQUAKE</div>
+                  <div class="label-stub"></div>
+                  <div class="ip-stub"></div>
+                  <div class="label-stub"></div>
+                  <div class="ip-stub"></div>
+                  <div class="btn-stub">Sign in</div>
+                </div>
+              </div>
+            </div>
+            <p class="option-note">Elevated card centered on a soft branded gradient. Linear / Notion territory. Calm, focused, low visual noise.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Minimal centered</span>
+            <span class="option-label">1C</span>
+          </div>
+          <div class="option-body">
+            <div class="browser-frame">
+              <div class="bf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">app.fitquake.com/login</span></div>
+              <div class="bf-body login-minimal">
+                <div class="logo">FITQUAKE</div>
+                <div class="form-area">
+                  <div class="label-stub"></div>
+                  <div class="ip-stub"></div>
+                  <div class="label-stub"></div>
+                  <div class="ip-stub"></div>
+                  <div class="btn-stub">Sign in</div>
+                </div>
+              </div>
+            </div>
+            <p class="option-note">Flat white background, form centered, no card. Stripe / Vercel style. Quietest, fastest-feeling, no branded chrome.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim1" value="D">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Full-bleed brand</span>
+            <span class="option-label">1D</span>
+          </div>
+          <div class="option-body">
+            <div class="browser-frame">
+              <div class="bf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">app.fitquake.com/login</span></div>
+              <div class="bf-body login-bleed">
+                <div class="card">
+                  <div class="logo">FITQUAKE</div>
+                  <div class="label-stub"></div>
+                  <div class="ip-stub"></div>
+                  <div class="label-stub"></div>
+                  <div class="ip-stub"></div>
+                  <div class="btn-stub">Sign in</div>
+                </div>
+              </div>
+            </div>
+            <p class="option-note">Full-bleed brand color background, form in a clean white card centered. Bold, immersive. Makes a strong "you're in Fitquake" statement.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 2. Loading / splash state                                       -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="2">
+    <div class="section-head">
+      <span class="section-num">2</span>
+      <h2>Loading / splash state</h2>
+    </div>
+    <p class="section-blurb">
+      What the user sees during the moment between "page loaded" and "session resolved + dashboard
+      data ready." Typically 200–800 ms for returning users, longer on first cold start.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim2" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Brand splash</span>
+            <span class="option-label">2A</span>
+          </div>
+          <div class="option-body">
+            <div class="browser-frame">
+              <div class="bf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">app.fitquake.com/dashboard</span></div>
+              <div class="bf-body loading-splash">
+                <div class="big-logo">FITQUAKE</div>
+                <div class="tagline">Loading your workspace…</div>
+                <div class="loading-spinner"></div>
+              </div>
+            </div>
+            <p class="option-note">Full-screen brand color + logo + spinner. Feels like a "real" app boot. Costs the user a moment of "nothing to look at." Best when load is &gt; 500ms.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim2" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Minimal spinner</span>
+            <span class="option-label">2B</span>
+          </div>
+          <div class="option-body">
+            <div class="browser-frame">
+              <div class="bf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">app.fitquake.com/dashboard</span></div>
+              <div class="bf-body loading-minimal">
+                <div class="small-logo">FITQUAKE</div>
+                <div class="loading-spinner dark"></div>
+              </div>
+            </div>
+            <p class="option-note">Tiny logo + brand-colored spinner on white. Quiet, fast-feeling. Doesn't earn its keep over 200ms but barely notices under that.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim2" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Skeleton dashboard</span>
+            <span class="option-label">2C</span>
+          </div>
+          <div class="option-body">
+            <div class="browser-frame">
+              <div class="bf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">app.fitquake.com/dashboard</span></div>
+              <div class="bf-body loading-skeleton">
+                <div class="skel-sidebar">
+                  <div class="si active"></div>
+                  <div class="si"></div>
+                  <div class="si"></div>
+                  <div class="si"></div>
+                </div>
+                <div class="skel-content">
+                  <div class="skel-kpi-row">
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                  </div>
+                  <div class="skel-card-big"></div>
+                </div>
+              </div>
+            </div>
+            <p class="option-note">Show the dashboard chrome immediately with placeholder pulses where data goes. Highest perceived performance. Linear &amp; modern. More code to maintain per page.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 3. Error display                                                -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="3">
+    <div class="section-head">
+      <span class="section-num">3</span>
+      <h2>Login error display</h2>
+    </div>
+    <p class="section-blurb">
+      Where the "wrong password" / "account locked" / "user not found" message appears. The pattern
+      we pick here also becomes the default for other form errors throughout the app.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim3" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Inline under field</span>
+            <span class="option-label">3A</span>
+          </div>
+          <div class="option-body">
+            <div class="err-demo">
+              <div class="form">
+                <div class="label">USERNAME</div>
+                <div class="input"></div>
+                <div class="label">PASSWORD</div>
+                <div class="input bad"></div>
+                <div class="err-text-inline">Incorrect password. Try again.</div>
+                <div class="btn">Sign in</div>
+              </div>
+            </div>
+            <p class="option-note">Error text directly under the offending field. Clearest signal of WHICH field is wrong. Standard accessibility pattern (aria-describedby ties text to input).</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim3" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Banner above form</span>
+            <span class="option-label">3B</span>
+          </div>
+          <div class="option-body">
+            <div class="err-demo">
+              <div class="err-banner">Incorrect username or password.</div>
+              <div class="form">
+                <div class="label">USERNAME</div>
+                <div class="input"></div>
+                <div class="label">PASSWORD</div>
+                <div class="input"></div>
+                <div class="btn">Sign in</div>
+              </div>
+            </div>
+            <p class="option-note">Single red banner above the form. Friendlier for security ("don't tell the attacker which field was wrong"). Less precise feedback for honest users.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim3" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Toast notification</span>
+            <span class="option-label">3C</span>
+          </div>
+          <div class="option-body">
+            <div class="err-demo">
+              <div class="err-toast">Incorrect username or password.</div>
+              <div class="form">
+                <div class="label">USERNAME</div>
+                <div class="input"></div>
+                <div class="label">PASSWORD</div>
+                <div class="input"></div>
+                <div class="btn">Sign in</div>
+              </div>
+            </div>
+            <p class="option-note">Toast slides in from top-right. Form stays visually clean. Consistent with toast pattern we'd use everywhere else for ephemeral feedback. Less anchored to the form.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 4. Forgot password placement                                    -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="4">
+    <div class="section-head">
+      <span class="section-num">4</span>
+      <h2>"Forgot password" placement</h2>
+    </div>
+    <p class="section-blurb">
+      Where the password-recovery entry-point lives on the login form. Visible enough that a user
+      can find it under stress, quiet enough not to compete with "Sign in."
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim4" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Small link under password</span>
+            <span class="option-label">4A</span>
+          </div>
+          <div class="option-body">
+            <div class="forgot-demo">
+              <div class="form">
+                <div class="field">
+                  <div class="label">USERNAME</div>
+                  <div class="input"></div>
+                </div>
+                <div class="field">
+                  <div class="field-meta">
+                    <div class="label">PASSWORD</div>
+                    <div class="forgot-tiny">Forgot?</div>
+                  </div>
+                  <div class="input"></div>
+                </div>
+                <div class="btn-row">
+                  <div class="btn">Sign in</div>
+                </div>
+              </div>
+            </div>
+            <p class="option-note">"Forgot?" link right by the password label. Discoverable exactly when needed. Doesn't take vertical space. Common in modern auth.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim4" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Footer link below form</span>
+            <span class="option-label">4B</span>
+          </div>
+          <div class="option-body">
+            <div class="forgot-demo">
+              <div class="form">
+                <div class="field">
+                  <div class="label">USERNAME</div>
+                  <div class="input"></div>
+                </div>
+                <div class="field">
+                  <div class="label">PASSWORD</div>
+                  <div class="input"></div>
+                </div>
+                <div class="btn-row">
+                  <div class="btn">Sign in</div>
+                </div>
+                <div class="footer-link">Trouble signing in? Reset password</div>
+              </div>
+            </div>
+            <p class="option-note">Below the Sign in button, separated by a divider. Classic enterprise app pattern. More phrasing flexibility ("trouble signing in" includes other recovery paths).</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim4" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Equal-weight ghost button</span>
+            <span class="option-label">4C</span>
+          </div>
+          <div class="option-body">
+            <div class="forgot-demo">
+              <div class="form">
+                <div class="field">
+                  <div class="label">USERNAME</div>
+                  <div class="input"></div>
+                </div>
+                <div class="field">
+                  <div class="label">PASSWORD</div>
+                  <div class="input"></div>
+                </div>
+                <div class="btn-row">
+                  <div class="btn">Sign in</div>
+                  <div class="btn ghost">Forgot password</div>
+                </div>
+              </div>
+            </div>
+            <p class="option-note">Two buttons side by side. Most prominent. May draw too much attention away from the primary action (Sign in). Useful if password-reset is genuinely common.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 5. Multi-tenant business switcher                               -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension" data-dim="5">
+    <div class="section-head">
+      <span class="section-num">5</span>
+      <h2>Multi-tenant business switcher</h2>
+    </div>
+    <p class="section-blurb">
+      Some staff/owners belong to more than one Fitquake business (e.g., a regional manager or a
+      trainer working across two locations). Where do they pick which one they're working in?
+      This decides the URL/header/redirect logic of the entire authed app.
+    </p>
+
+    <div class="options">
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim5" value="A">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Pick at login</span>
+            <span class="option-label">5A</span>
+          </div>
+          <div class="option-body">
+            <div class="biz-flow">
+              <div class="step">
+                <div class="screen"><div class="ti brand"></div><div class="ti small"></div><div class="ti"></div></div>
+                <div class="arrow">→</div>
+                <div class="label"><strong>Sign in</strong> with credentials</div>
+              </div>
+              <div class="step">
+                <div class="screen"><div class="ti small"></div><div class="ti brand"></div><div class="ti brand"></div></div>
+                <div class="arrow">→</div>
+                <div class="label"><strong>Choose business</strong> (only if &gt; 1)</div>
+              </div>
+              <div class="step">
+                <div class="screen"><div class="ti"></div><div class="ti"></div><div class="ti small"></div></div>
+                <div class="arrow"></div>
+                <div class="label">Land on dashboard</div>
+              </div>
+              <div class="biz-screen-detail">
+                <div class="biz-row active"><span class="bullet">A</span>Anytime Fitness</div>
+                <div class="biz-row"><span class="bullet">P</span>Plus Performance</div>
+                <div class="biz-row"><span class="bullet">R</span>Regional Sports Center</div>
+              </div>
+            </div>
+            <p class="option-note">After credentials, the user picks the business and lands on its dashboard. URL becomes business-scoped from the start. Cleanest mental model. Extra click for multi-business users.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim5" value="B">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Header dropdown post-login</span>
+            <span class="option-label">5B</span>
+          </div>
+          <div class="option-body">
+            <div class="biz-flow">
+              <div class="step">
+                <div class="screen"><div class="ti brand"></div><div class="ti small"></div><div class="ti"></div></div>
+                <div class="arrow">→</div>
+                <div class="label"><strong>Sign in</strong> → land on default business</div>
+              </div>
+              <div class="step">
+                <div class="screen"><div class="ti"></div><div class="ti"></div><div class="ti small"></div></div>
+                <div class="arrow"></div>
+                <div class="label">Dashboard loads with last-used business</div>
+              </div>
+              <div class="biz-dropdown">
+                <div>
+                  <div class="label-line">CURRENT BUSINESS</div>
+                  <div class="biz-name">Anytime Fitness</div>
+                </div>
+                <div class="chevron">▾</div>
+              </div>
+              <div class="label" style="font-size:10px; color: var(--ink-3); margin-top: 2px; padding: 0 4px;">Switch via top-nav dropdown anytime.</div>
+            </div>
+            <p class="option-note">Default business loaded, header dropdown to switch. Fewest clicks for single-business users (most common). Risk: trainer in two locations forgets which they're in.</p>
+          </div>
+        </article>
+      </label>
+
+      <label class="opt-wrap">
+        <input type="radio" name="dim5" value="C">
+        <div class="checkmark">✓</div>
+        <article class="option">
+          <div class="option-header">
+            <span class="option-name">Dedicated post-login screen</span>
+            <span class="option-label">5C</span>
+          </div>
+          <div class="option-body">
+            <div class="biz-flow">
+              <div class="step">
+                <div class="screen"><div class="ti brand"></div><div class="ti small"></div><div class="ti"></div></div>
+                <div class="arrow">→</div>
+                <div class="label"><strong>Sign in</strong> → always</div>
+              </div>
+              <div class="step">
+                <div class="screen"><div class="ti small"></div><div class="ti brand"></div><div class="ti brand"></div></div>
+                <div class="arrow">→</div>
+                <div class="label"><strong>"Where to?"</strong> screen — pick business <em>+</em> workspace</div>
+              </div>
+              <div class="step">
+                <div class="screen"><div class="ti"></div><div class="ti"></div><div class="ti small"></div></div>
+                <div class="arrow"></div>
+                <div class="label">Dashboard / Trainer / Portal</div>
+              </div>
+              <div class="biz-screen-detail">
+                <div class="biz-row active"><span class="bullet">A</span>Anytime Fitness · Admin</div>
+                <div class="biz-row"><span class="bullet">A</span>Anytime Fitness · Trainer</div>
+                <div class="biz-row"><span class="bullet">P</span>Plus Performance · Admin</div>
+              </div>
+            </div>
+            <p class="option-note">A unified picker that combines business AND role/workspace (admin / trainer / member). Most explicit. Extra step for everyone, but eliminates "wrong workspace" confusion.</p>
+          </div>
+        </article>
+      </label>
+
+    </div>
+  </section>
+
+</div>
+
+<!-- ────────────────────────────────────────────────────────────── -->
+<!-- DECISION PANEL (sticky bottom)                                  -->
+<!-- ────────────────────────────────────────────────────────────── -->
+<aside id="decision-panel" aria-label="Your decision">
+  <div class="panel-col">
+    <div class="reviewer-row">
+      <h4 style="margin:0; min-width:auto;">REVIEWER</h4>
+      <input type="text" id="reviewer-name" placeholder="Your name (Craig, Mike, …)" autocomplete="name" />
+    </div>
+    <h4>YOUR PICKS</h4>
+    <div class="picks-row" id="picks-display"><span class="none">No picks yet — click an option above.</span></div>
+    <div class="progress-line" id="progress-line">0 of 5 chosen</div>
+  </div>
+  <div class="panel-col">
+    <h4>COMMENTS (optional)</h4>
+    <textarea id="comments" placeholder="Concerns, mix-ins, or anything worth noting (e.g., 'love 1B but want the brand splash 2A reserved for cold-boot only')."></textarea>
+  </div>
+  <div class="actions">
+    <button id="copy-btn" class="primary" type="button">Copy decision</button>
+    <button id="reset-btn" class="ghost" type="button">Reset all</button>
+  </div>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  const ROUND_ID = "round-02-login-and-first-load";
+  const ROUND_TITLE = "Round 2 — Login & First Load";
+  const TOTAL_DIMS = 5;
+  const STORAGE = {
+    picks: `fitquake-mocks:${ROUND_ID}:picks`,
+    comments: `fitquake-mocks:${ROUND_ID}:comments`,
+    reviewer: `fitquake-mocks:${ROUND_ID}:reviewer`,
+  };
+
+  const $picks = document.getElementById("picks-display");
+  const $progress = document.getElementById("progress-line");
+  const $comments = document.getElementById("comments");
+  const $reviewer = document.getElementById("reviewer-name");
+  const $copyBtn = document.getElementById("copy-btn");
+  const $resetBtn = document.getElementById("reset-btn");
+
+  function getCurrentPicks() {
+    const picks = {};
+    document.querySelectorAll('input[type="radio"]:checked').forEach((r) => {
+      const dim = r.name.replace("dim", "");
+      picks[dim] = r.value;
+    });
+    return picks;
+  }
+
+  function renderPicks() {
+    const picks = getCurrentPicks();
+    const ordered = [];
+    for (let i = 1; i <= TOTAL_DIMS; i++) {
+      if (picks[i]) ordered.push(`${i}${picks[i]}`);
+    }
+    if (ordered.length === 0) {
+      $picks.innerHTML = '<span class="none">No picks yet — click an option above.</span>';
+    } else {
+      $picks.textContent = ordered.join(", ");
+    }
+    $progress.textContent = `${ordered.length} of ${TOTAL_DIMS} chosen`;
+  }
+
+  function persist() {
+    const picks = getCurrentPicks();
+    localStorage.setItem(STORAGE.picks, JSON.stringify(picks));
+    localStorage.setItem(STORAGE.comments, $comments.value);
+    localStorage.setItem(STORAGE.reviewer, $reviewer.value);
+  }
+
+  function restore() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE.picks) || "{}");
+      Object.keys(saved).forEach((dim) => {
+        const value = saved[dim];
+        const radio = document.querySelector(`input[name="dim${dim}"][value="${value}"]`);
+        if (radio) radio.checked = true;
+      });
+      $comments.value = localStorage.getItem(STORAGE.comments) || "";
+      $reviewer.value = localStorage.getItem(STORAGE.reviewer) || "";
+    } catch (e) {
+      // ignore parse failures
+    }
+    renderPicks();
+  }
+
+  function buildClipboardText() {
+    const picks = getCurrentPicks();
+    const ordered = [];
+    const missing = [];
+    for (let i = 1; i <= TOTAL_DIMS; i++) {
+      if (picks[i]) ordered.push(`${i}${picks[i]}`);
+      else missing.push(`${i}`);
+    }
+    const reviewer = ($reviewer.value || "(anonymous)").trim();
+    const today = new Date().toISOString().slice(0, 10);
+    const comments = $comments.value.trim() || "(none)";
+    const missingNote = missing.length
+      ? `\nNot yet chosen: dimension(s) ${missing.join(", ")}`
+      : "";
+    return [
+      `FITQUAKE DESIGN — ${ROUND_TITLE.toUpperCase()}`,
+      `Reviewer: ${reviewer}`,
+      `Date: ${today}`,
+      "",
+      `Picks: ${ordered.length ? ordered.join(", ") : "(none)"}${missingNote}`,
+      "",
+      "Comments:",
+      comments,
+    ].join("\n");
+  }
+
+  async function copyDecision() {
+    const text = buildClipboardText();
+    try {
+      await navigator.clipboard.writeText(text);
+      $copyBtn.textContent = "Copied ✓";
+      $copyBtn.classList.add("copied");
+      setTimeout(() => {
+        $copyBtn.textContent = "Copy decision";
+        $copyBtn.classList.remove("copied");
+      }, 1800);
+    } catch (e) {
+      window.prompt("Copy to clipboard, then paste to Phil:", text);
+    }
+  }
+
+  function resetAll() {
+    if (!window.confirm("Clear all picks, comments, and reviewer name for this round?")) return;
+    document.querySelectorAll('input[type="radio"]:checked').forEach((r) => (r.checked = false));
+    $comments.value = "";
+    $reviewer.value = "";
+    localStorage.removeItem(STORAGE.picks);
+    localStorage.removeItem(STORAGE.comments);
+    localStorage.removeItem(STORAGE.reviewer);
+    renderPicks();
+  }
+
+  document.querySelectorAll('input[type="radio"]').forEach((r) => {
+    r.addEventListener("change", () => {
+      renderPicks();
+      persist();
+    });
+  });
+  $comments.addEventListener("input", persist);
+  $reviewer.addEventListener("input", persist);
+  $copyBtn.addEventListener("click", copyDecision);
+  $resetBtn.addEventListener("click", resetAll);
+
+  restore();
+})();
+</script>
+</body>
+</html>
