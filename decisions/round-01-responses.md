@@ -33,11 +33,32 @@ Status: **OPEN** (collecting responses)
 
 ---
 
-### Craig — _awaiting response_
+### Craig — 2026-05-17
+
+| 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|
+| 1A | 2A | 3A | 4A | 5B | 6B |
+
+**Comments:** (none)
 
 ---
 
 ### Mike — _awaiting response_
+
+---
+
+## Running tally (2 of 3 responses in)
+
+| Dim | Phil | Craig | Mike | Status |
+|---|---|---|---|---|
+| 1. Palette + logo | 1A (+ 1D logo) | 1A | — | ✅ Aligned on 1A palette (logo mix still open) |
+| 2. Card surface | 2C hybrid | 2A shadow | — | ⚠️ Split — Mike breaks tie |
+| 3. Sidebar | 3A dark | 3A dark | — | ✅ Aligned |
+| 4. Avatar | 4A photo+ring | 4A photo+ring | — | ✅ Aligned |
+| 5. Start Session | 5A hero | 5B roster | — | ⚠️ Split — Mike breaks tie |
+| 6. Member hero | 6A next-class | 6B snapshot | — | ⚠️ Split — Mike breaks tie |
+
+3 dimensions aligned (1, 3, 4), 3 split (2, 5, 6) — Mike's response will resolve the splits or trigger a discussion.
 
 ---
 
