@@ -20,11 +20,34 @@ Status: **OPEN** (collecting responses)
 
 ## Responses
 
-### Phil — _awaiting response_
+### Phil — 2026-05-17
+
+| 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|
+| 1C | 2A | 3A | 4D | 5B | 6C |
+
+**Comments:** (none)
+
+---
 
 ### Craig — _awaiting response_
 
 ### Mike — _awaiting response_
+
+---
+
+## Running tally (1 of 3 responses in)
+
+Phil's picks lean operational/efficient — today-focused KPIs (1C), full-width schedule grid (3A), mixed right rail (4D), compact density (5B), honest zeros for empty state (6C). The one richer pick is 2A revenue trend as the hero chart, which gives owners the "money narrative" anchor even though the KPIs above it are floor-ops-flavored.
+
+| Dim | Phil | Craig | Mike | Status |
+|---|---|---|---|---|
+| 1. KPI priority | 1C Activity-first | — | — | awaiting |
+| 2. Hero chart | 2A Revenue trend | — | — | awaiting |
+| 3. Schedule placement | 3A Full-width grid | — | — | awaiting |
+| 4. Right-rail | 4D Mixed | — | — | awaiting |
+| 5. Density | 5B Compact | — | — | awaiting |
+| 6. Empty state | 6C Minimal zeros | — | — | awaiting |
 
 ---
 

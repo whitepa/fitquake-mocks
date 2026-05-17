@@ -3,7 +3,7 @@
 Picker: [02-login-and-first-load.html](../02-login-and-first-load.html)
 
 Opened: 2026-05-17
-Status: **OPEN** (collecting responses)
+Status: **ALL RESPONSES IN — ready to close**
 
 ---
 
@@ -32,9 +32,35 @@ Status: **OPEN** (collecting responses)
 
 ---
 
-### Craig — _awaiting response_
+### Craig — 2026-05-17
 
-### Mike — _awaiting response_
+| 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|
+| 1D | 2B | 3A | 4B | 5B |
+
+**Comments:** (none)
+
+---
+
+### Mike — 2026-05-17
+
+| 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|
+| 1D | 2C | 3B | 4B | 5B |
+
+**Comments:** (none)
+
+---
+
+## Running tally (3 of 3 responses in)
+
+| Dim | Phil | Craig | Mike | Outcome |
+|---|---|---|---|---|
+| 1. Login layout | 1D Full-bleed | 1D Full-bleed | 1D Full-bleed | ✅ **Unanimous 1D** |
+| 2. Loading state | 2C Skeleton | 2B Minimal spinner | 2C Skeleton | ✅ **2C majority** (Phil + Mike) |
+| 3. Error display | 3B Banner | 3A Inline | 3B Banner | ✅ **3B majority** (Phil + Mike) |
+| 4. Forgot password | 4A Small link | 4B Footer | 4B Footer | ⚠️ **4B majority** (Craig + Mike) — Phil is the outlier |
+| 5. Business switcher | 5B Header dropdown | 5B Header dropdown | 5B Header dropdown | ✅ **Unanimous 5B** |
 
 ---
 
@@ -73,13 +99,31 @@ once Phase 7a foundation is in.
 
 ---
 
-## Synthesis (to be filled in once all responses are in)
+## Synthesis
 
-_Will list:_
-- Where all reviewers agree (lock immediately)
-- Where there's a 2-1 split (Phil decides or we discuss)
-- Where there's a 1-1-1 split (we discuss)
-- Any cross-cutting comments worth threading through Phase 7a implementation
+### Locked by unanimous or strong majority
+
+- **1 login layout → 1D Full-bleed brand** — unanimous. The bold-immersive option won everyone. Pairs naturally with Round 1's locked teal palette.
+- **2 loading state → 2C Skeleton dashboard** — 2-1 majority (Phil + Mike). Craig preferred the minimal spinner. The skeleton has best perceived performance and "feels modern"; Craig's preference is also defensible (less code to maintain) but the majority wins.
+- **3 error display → 3B Banner above form** — 2-1 majority (Phil + Mike). Craig preferred inline-under-field. Banner trades precision for security-mindedness ("don't tell attackers which field was wrong"); fine for login but we should still use 3A inline-under-field for non-security forms throughout the app where precision matters more.
+- **5 business switcher → 5B Header dropdown** — unanimous. Plus Phil's per-business branding follow-on (already parked as Phase 7j in `docs/PLAN.md`) addresses the only real risk of header-dropdown switching.
+
+### Majority goes against Phil (2-1)
+
+- **4 forgot password → 4B Footer link below form** — Craig + Mike align. Phil picked 4A (small link under password). The 4B "Trouble signing in? Reset password" framing also covers things beyond just password (account locked, contact admin) — Mike+Craig's preference probably reflects that.
+  - **Recommendation: lock 4B per majority.** Phil's 4A is also fine, but 4B is more flexible and the majority calls it. Low-stakes UX — easy to revisit.
+
+### Final picks (recommended lock)
+
+```
+1D · 2C · 3B · 4B · 5B
+```
+
+### Follow-on (already parked)
+
+Phase 7j — per-business header branding — covers the visible-business-context concern from 5B. See `docs/PLAN.md`. No further action needed in Round 2 closure.
+
+---
 
 ---
 
