@@ -203,6 +203,32 @@
   }
   footer a:hover { color: var(--brand); border-color: var(--brand); }
 
+  .results-cta {
+    display: block;
+    margin: 32px 0 40px;
+    padding: 18px 22px;
+    background: var(--brand-tint);
+    border: 2px solid var(--brand);
+    border-radius: var(--radius);
+    color: var(--brand-deep);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    transition: background-color 120ms, transform 120ms;
+  }
+  .results-cta:hover {
+    background: #99f6e4;
+    transform: translateY(-1px);
+  }
+  .results-cta-sub {
+    display: block;
+    margin-top: 4px;
+    color: var(--ink-2);
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
   @media (max-width: 600px) {
     .page { padding: 40px 18px 64px; }
     h1 { font-size: 26px; }
@@ -234,6 +260,11 @@
     Click in, click your picks, add a comment, copy the decision string, paste it back to Phil.
     Your selections are saved in your browser as you go.
   </p>
+
+  <a href="results.html" class="results-cta">
+    📊 View results so far →
+    <span class="results-cta-sub">See per-reviewer picks, where the team aligned, and recommended locks for every round.</span>
+  </a>
 
   <div class="section-label">Open rounds</div>
   <div class="decision-list">
@@ -317,7 +348,7 @@
             <span class="dot"></span>
             <span>~4 min</span>
             <span class="dot"></span>
-            <span>2 of 3 responses in</span>
+            <span>3 of 3 · ready to close</span>
           </div>
           <h3 class="title">Persona-specific Dashboards</h3>
           <p class="desc">

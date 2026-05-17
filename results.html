@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fitquake · Design Decisions — Results</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --ink-3: #64748b;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --brand: #0d9488;
+    --brand-tint: #ccfbf1;
+    --brand-deep: #0E3F3B;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .page { max-width: 1080px; margin: 0 auto; padding: 56px 32px 96px; }
+
+  header.brand {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+  }
+  header.brand svg { height: 28px; }
+  header.brand .name {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.16em; color: var(--ink);
+  }
+  header.brand .name .sub {
+    color: var(--ink-3); font-weight: 500; letter-spacing: 0.04em; margin-left: 8px;
+  }
+  .breadcrumb { margin-top: 4px; font-size: 13px; color: var(--ink-3); }
+  .breadcrumb a { color: var(--brand); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  h1 {
+    font-size: 34px; font-weight: 700; letter-spacing: -0.02em;
+    margin: 28px 0 12px;
+  }
+  p.lede {
+    color: var(--ink-2); line-height: 1.6; font-size: 15px;
+    max-width: 720px; margin: 0 0 40px;
+  }
+
+  .round-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .round-block .round-head {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    background: #fafbfc;
+    display: flex; align-items: baseline; gap: 14px;
+    flex-wrap: wrap;
+  }
+  .round-block .round-no {
+    width: 32px; height: 32px; border-radius: 999px;
+    background: var(--ink); color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; flex-shrink: 0;
+  }
+  .round-block .round-title {
+    font-size: 19px; font-weight: 700; letter-spacing: -0.01em; margin: 0;
+  }
+  .round-block .round-meta {
+    margin-left: auto; font-size: 12px; color: var(--ink-3);
+    display: flex; gap: 10px; align-items: center;
+  }
+  .round-block .round-meta a {
+    color: var(--brand); text-decoration: none;
+  }
+  .round-block .round-meta a:hover { text-decoration: underline; }
+  .round-block .round-meta .dot {
+    width: 4px; height: 4px; background: var(--ink-3); border-radius: 50%;
+  }
+
+  .round-status {
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .round-status.complete { background: var(--brand-tint); color: var(--brand-deep); }
+  .round-status.in-progress { background: #fef3c7; color: #92400e; }
+
+  .round-body {
+    padding: 22px;
+  }
+
+  .results-table {
+    background: white; border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+  }
+  .results-table table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  .results-table th, .results-table td {
+    padding: 11px 14px; text-align: left;
+    border-bottom: 1px solid var(--border); vertical-align: middle;
+  }
+  .results-table th {
+    background: #f8fafc; font-size: 11px; font-weight: 700;
+    color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .results-table th.reviewer { text-align: center; min-width: 70px; }
+  .results-table th.status-col { min-width: 180px; }
+  .results-table tr:last-child td { border-bottom: none; }
+  .results-table .dim-name {
+    font-weight: 600; color: var(--ink);
+    min-width: 130px;
+  }
+  .results-table .pick {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-weight: 600; color: var(--ink-2);
+    text-align: center;
+  }
+  .results-table .pick.locked { color: var(--brand); }
+  .results-table .pick.outlier { color: #9f1239; }
+  .results-table .pick.dash { color: var(--ink-3); font-weight: 400; }
+
+  .status-badge {
+    display: inline-block; padding: 3px 9px; border-radius: 4px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .status-badge.unanimous { background: var(--brand); color: white; }
+  .status-badge.majority { background: var(--brand-tint); color: var(--brand-deep); }
+  .status-badge.split { background: #fef3c7; color: #92400e; }
+  .status-badge.outlier-w { background: #ffe4e6; color: #9f1239; }
+  .status-badge.awaiting { background: #f1f5f9; color: var(--ink-3); border: 1px dashed var(--border-strong); }
+  .status-badge.supersedes { background: #ede9fe; color: #5b21b6; }
+  .status-note {
+    font-size: 12px; color: var(--ink-3); margin-top: 4px; line-height: 1.45;
+  }
+
+  .lock-box {
+    margin-top: 18px; background: var(--brand-tint);
+    border: 2px solid var(--brand); border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .lock-box h3 {
+    margin: 0 0 8px; font-size: 11px; font-weight: 700;
+    color: var(--brand-deep); text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .lock-box .lock-string {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px; font-weight: 700; color: var(--brand-deep);
+    background: white; padding: 10px 14px; border-radius: 6px;
+    border: 1px solid var(--brand);
+    display: block; margin: 4px 0 12px;
+    word-break: break-word;
+  }
+  .lock-box p {
+    font-size: 13px; color: var(--ink-2); line-height: 1.55; margin: 0;
+  }
+  .lock-box p + p { margin-top: 8px; }
+
+  .pending-box {
+    margin-top: 18px; background: #fff7ed;
+    border: 2px dashed #fdba74; border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .pending-box h3 {
+    margin: 0 0 6px; font-size: 11px; font-weight: 700;
+    color: #9a3412; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .pending-box p {
+    font-size: 13px; color: var(--ink-2); line-height: 1.55; margin: 0;
+  }
+
+  .followon {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: #f5f3ff;
+    border: 1px solid #ddd6fe;
+    border-radius: 6px;
+    font-size: 13px; color: #5b21b6; line-height: 1.55;
+  }
+  .followon strong { color: #4c1d95; }
+  .followon code {
+    background: rgba(91, 33, 182, 0.1); padding: 1px 6px;
+    border-radius: 3px; font-size: 12px;
+  }
+
+  .themes {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-top: 40px;
+  }
+  .themes h2 {
+    margin: 0 0 14px; font-size: 18px; font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .themes h3 {
+    margin: 20px 0 6px; font-size: 13px; font-weight: 700;
+    color: var(--brand-deep);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .themes h3:first-of-type { margin-top: 0; }
+  .themes p {
+    font-size: 14px; line-height: 1.6; color: var(--ink-2); margin: 0;
+  }
+  .themes p + p { margin-top: 8px; }
+  .themes code {
+    background: #f1f5f9; padding: 1px 6px; border-radius: 3px;
+    font-size: 12px;
+  }
+
+  footer {
+    margin-top: 56px; padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--ink-3);
+    display: flex; justify-content: space-between; gap: 16px;
+    flex-wrap: wrap;
+  }
+  footer a {
+    color: var(--ink-3); text-decoration: none;
+    border-bottom: 1px dotted var(--ink-3);
+  }
+  footer a:hover { color: var(--brand); border-color: var(--brand); }
+
+  @media (max-width: 700px) {
+    .page { padding: 32px 16px 64px; }
+    h1 { font-size: 26px; }
+    .results-table { font-size: 12px; }
+    .results-table th, .results-table td { padding: 8px 10px; }
+    .round-block .round-meta { font-size: 11px; }
+  }
+  @media (max-width: 540px) {
+    .results-table {
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .results-table table { min-width: 540px; }
+    .round-block .round-head { gap: 10px; }
+    .round-block .round-title { font-size: 17px; }
+    .round-block .round-meta { width: 100%; margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="brand">
+    <svg viewBox="0 0 220 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g transform="translate(4,6)">
+        <path d="M20 0 L6 22 H16 L10 38 L28 14 H18 Z" fill="#0d9488" />
+      </g>
+      <text x="44" y="34" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="800" font-size="24" letter-spacing="1.5" fill="#0E3F3B">FITQUAKE</text>
+    </svg>
+    <span class="name">DESIGN DECISIONS<span class="sub">· results summary</span></span>
+  </header>
+  <div class="breadcrumb"><a href="./">← Back to decision rounds</a></div>
+
+  <h1>Results so far</h1>
+  <p class="lede">
+    Live synthesis of every Fitquake design decision round — per-reviewer picks, where everyone aligned,
+    where the team split, and the recommended lock for each round. Updated as new responses come in.
+  </p>
+
+  <!-- ────────── Round 1 ────────── -->
+  <section class="round-block">
+    <div class="round-head">
+      <span class="round-no">1</span>
+      <h2 class="round-title">Brand &amp; Shell</h2>
+      <span class="round-status complete">3 of 3 · ready to close</span>
+      <div class="round-meta">
+        <a href="01-brand-and-shell.html">picker →</a>
+        <span class="dot"></span>
+        <a href="https://github.com/whitepa/fitquake-mocks/blob/main/decisions/round-01-responses.md" target="_blank" rel="noopener">full responses →</a>
+      </div>
+    </div>
+    <div class="round-body">
+      <div class="results-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th class="reviewer">Phil</th>
+              <th class="reviewer">Craig</th>
+              <th class="reviewer">Mike</th>
+              <th class="status-col">Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="dim-name">1 · Palette + logo</td>
+              <td class="pick locked">1A <span style="color:var(--ink-3); font-weight:400;">+ 1D logo</span></td>
+              <td class="pick">1A</td>
+              <td class="pick">1A</td>
+              <td><span class="status-badge unanimous">Unanimous 1A</span><div class="status-note">Phil's 1D-logo mix-in respected; others didn't push back.</div></td>
+            </tr>
+            <tr>
+              <td class="dim-name">2 · Card surface</td>
+              <td class="pick locked">2C</td>
+              <td class="pick">2A</td>
+              <td class="pick">2B</td>
+              <td><span class="status-badge split">1-1-1 split</span><div class="status-note">2C (hybrid) literally combines 2A shadow + 2B border — satisfies both other preferences.</div></td>
+            </tr>
+            <tr>
+              <td class="dim-name">3 · Sidebar</td>
+              <td class="pick locked">3A</td>
+              <td class="pick">3A</td>
+              <td class="pick">3B</td>
+              <td><span class="status-badge majority">3A majority</span></td>
+            </tr>
+            <tr>
+              <td class="dim-name">4 · Avatar</td>
+              <td class="pick locked">4A</td>
+              <td class="pick">4A</td>
+              <td class="pick">4B</td>
+              <td><span class="status-badge majority">4A majority</span></td>
+            </tr>
+            <tr>
+              <td class="dim-name">5 · Start Session</td>
+              <td class="pick locked">5A</td>
+              <td class="pick">5B</td>
+              <td class="pick">5A</td>
+              <td><span class="status-badge majority">5A majority</span></td>
+            </tr>
+            <tr>
+              <td class="dim-name">6 · Member hero</td>
+              <td class="pick locked">6A</td>
+              <td class="pick">6B</td>
+              <td class="pick">6A</td>
+              <td><span class="status-badge majority">6A majority</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="lock-box">
+        <h3>Recommended lock</h3>
+        <span class="lock-string">1A palette + 1D logo · 2C · 3A · 4A · 5A · 6A</span>
+        <p>5 of 6 dimensions land on the warmer/richer end (Phil + Mike cluster); Craig leans calmer. The 5C user-density toggle (Round 3) gives Craig a back-channel if specific dense screens feel too noisy — no need to re-litigate.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────── Round 2 ────────── -->
+  <section class="round-block">
+    <div class="round-head">
+      <span class="round-no">2</span>
+      <h2 class="round-title">Login &amp; First Load</h2>
+      <span class="round-status complete">3 of 3 · ready to close</span>
+      <div class="round-meta">
+        <a href="02-login-and-first-load.html">picker →</a>
+        <span class="dot"></span>
+        <a href="https://github.com/whitepa/fitquake-mocks/blob/main/decisions/round-02-responses.md" target="_blank" rel="noopener">full responses →</a>
+      </div>
+    </div>
+    <div class="round-body">
+      <div class="results-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th class="reviewer">Phil</th>
+              <th class="reviewer">Craig</th>
+              <th class="reviewer">Mike</th>
+              <th class="status-col">Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="dim-name">1 · Login layout</td>
+              <td class="pick locked">1D</td>
+              <td class="pick">1D</td>
+              <td class="pick">1D</td>
+              <td><span class="status-badge unanimous">Unanimous 1D</span></td>
+            </tr>
+            <tr>
+              <td class="dim-name">2 · Loading state</td>
+              <td class="pick locked">2C</td>
+              <td class="pick">2B</td>
+              <td class="pick">2C</td>
+              <td><span class="status-badge majority">2C majority</span></td>
+            </tr>
+            <tr>
+              <td class="dim-name">3 · Error display</td>
+              <td class="pick locked">3B</td>
+              <td class="pick">3A</td>
+              <td class="pick">3B</td>
+              <td><span class="status-badge majority">3B majority</span><div class="status-note">3A inline-under-field still used for non-security forms throughout app.</div></td>
+            </tr>
+            <tr>
+              <td class="dim-name">4 · Forgot password</td>
+              <td class="pick outlier">4A</td>
+              <td class="pick locked">4B</td>
+              <td class="pick locked">4B</td>
+              <td><span class="status-badge outlier-w">4B majority — Phil outvoted</span><div class="status-note">4B "Trouble signing in?" framing covers password + locked accounts + email issues.</div></td>
+            </tr>
+            <tr>
+              <td class="dim-name">5 · Business switcher</td>
+              <td class="pick locked">5B</td>
+              <td class="pick">5B</td>
+              <td class="pick">5B</td>
+              <td><span class="status-badge unanimous">Unanimous 5B</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="lock-box">
+        <h3>Recommended lock</h3>
+        <span class="lock-string">1D · 2C · 3B · 4B · 5B</span>
+        <p>Phil overruled on Dim 4 by majority. Low-stakes UX call — easy to revisit if user feedback surfaces a real problem.</p>
+      </div>
+
+      <div class="followon">
+        <strong>Follow-on parked in plan:</strong> <code>Phase 7j — Per-business header branding</code>
+        landed in <code>fitquake2/docs/PLAN.md</code> at commit <code>01ec1f7</code>. Captures Phil's
+        comment that per-business logos in the header mitigate the "which business am I in?" risk of
+        the unanimous 5B header-dropdown choice. ~1 PW estimated; no schema churn required (leverages
+        Phase 6.5.G file storage).
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────── Round 3 ────────── -->
+  <section class="round-block">
+    <div class="round-head">
+      <span class="round-no">3</span>
+      <h2 class="round-title">Dashboard Layout &amp; Widgets</h2>
+      <span class="round-status complete">3 of 3 · ready to close</span>
+      <div class="round-meta">
+        <a href="03-dashboard-layout.html">picker →</a>
+        <span class="dot"></span>
+        <a href="https://github.com/whitepa/fitquake-mocks/blob/main/decisions/round-03-responses.md" target="_blank" rel="noopener">full responses →</a>
+      </div>
+    </div>
+    <div class="round-body">
+      <div class="results-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th class="reviewer">Phil</th>
+              <th class="reviewer">Craig</th>
+              <th class="reviewer">Mike</th>
+              <th class="status-col">Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="dim-name">1 · KPI priority</td>
+              <td class="pick">1D</td>
+              <td class="pick">1A</td>
+              <td class="pick">1D</td>
+              <td><span class="status-badge supersedes">Superseded by R4</span><div class="status-note">1D Mixed wins as generic fallback; per-persona picks in Round 4 take over.</div></td>
+            </tr>
+            <tr>
+              <td class="dim-name">2 · Hero chart</td>
+              <td class="pick locked">2A</td>
+              <td class="pick">2D</td>
+              <td class="pick">2B</td>
+              <td><span class="status-badge split">1-1-1 split</span><div class="status-note">Phil's 2A as default; per-persona overrides in a future round.</div></td>
+            </tr>
+            <tr>
+              <td class="dim-name">3 · Schedule placement</td>
+              <td class="pick outlier">3A</td>
+              <td class="pick locked">3B</td>
+              <td class="pick locked">3B</td>
+              <td><span class="status-badge outlier-w">3B majority — Phil outvoted</span><div class="status-note">Full schedule grid lives in dedicated Calendar page (Phase 7d) anyway.</div></td>
+            </tr>
+            <tr>
+              <td class="dim-name">4 · Right-rail</td>
+              <td class="pick locked">4D</td>
+              <td class="pick">4D</td>
+              <td class="pick">4A</td>
+              <td><span class="status-badge majority">4D majority</span></td>
+            </tr>
+            <tr>
+              <td class="dim-name">5 · Density</td>
+              <td class="pick">5B</td>
+              <td class="pick locked">5C</td>
+              <td class="pick">5A</td>
+              <td><span class="status-badge split">1-1-1 split → 5C compromise</span><div class="status-note">5C user-toggle is the only option that satisfies all 3 reviewers; default Comfortable.</div></td>
+            </tr>
+            <tr>
+              <td class="dim-name">6 · Empty state</td>
+              <td class="pick locked">6C</td>
+              <td class="pick">6A</td>
+              <td class="pick">6B</td>
+              <td><span class="status-badge split">1-1-1 split</span><div class="status-note">6C minimal zeros — safest, no extra illustration work.</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="lock-box">
+        <h3>Recommended lock</h3>
+        <span class="lock-string">1D (fallback) · 2A · 3B · 4D · 5C (default Comfortable) · 6C</span>
+        <p>Three majority decisions + three 1-1-1 splits. The unusual outcome on Dim 5 — Craig's 5C user-toggle pick — is the rare "compromise option" that satisfies all three reviewers by letting each user pick their own density. Phil overruled on Dim 3 (schedule placement) by majority.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────── Round 4 ────────── -->
+  <section class="round-block">
+    <div class="round-head">
+      <span class="round-no">4</span>
+      <h2 class="round-title">Persona-specific Dashboards</h2>
+      <span class="round-status complete">3 of 3 · ready to close</span>
+      <div class="round-meta">
+        <a href="04-persona-dashboards.html">picker →</a>
+        <span class="dot"></span>
+        <a href="https://github.com/whitepa/fitquake-mocks/blob/main/decisions/round-04-responses.md" target="_blank" rel="noopener">full responses →</a>
+      </div>
+    </div>
+    <div class="round-body">
+      <div class="results-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Persona</th>
+              <th class="reviewer">Phil</th>
+              <th class="reviewer">Craig</th>
+              <th class="reviewer">Mike</th>
+              <th class="status-col">Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="dim-name">1 · Gym admin</td>
+              <td class="pick locked">1A Growth</td>
+              <td class="pick">1A Growth</td>
+              <td class="pick">1A Growth</td>
+              <td><span class="status-badge unanimous">Unanimous 1A Growth</span><div class="status-note">ChatGPT-recommended pack; all three reviewers aligned.</div></td>
+            </tr>
+            <tr>
+              <td class="dim-name">2 · Trainer</td>
+              <td class="pick locked">2C Today</td>
+              <td class="pick">2B Retention</td>
+              <td class="pick">2C Today</td>
+              <td><span class="status-badge majority">2C Today majority</span><div class="status-note">Phil + Mike picked Today. Craig picked Retention. Notable: ChatGPT recommended 2A Income — nobody picked it. Trainer staff lean operational/today; independents would prefer Income (offer as one-click switch).</div></td>
+            </tr>
+            <tr>
+              <td class="dim-name">3 · Member portal</td>
+              <td class="pick locked">3A Activity</td>
+              <td class="pick">3A Activity</td>
+              <td class="pick">3C Achievement</td>
+              <td><span class="status-badge majority">3A Activity majority</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="lock-box">
+        <h3>Recommended lock</h3>
+        <span class="lock-string">1A Growth (gym admin) · 2C Today (trainer) · 3A Activity (member)</span>
+        <p>One unanimous (gym admin), two majority. Notable: ChatGPT recommended 2A Income for trainers, but no reviewer picked it — the staff-trainer-with-today's-sessions framing won. Recommend ship 2C as default for staff-trainer role, and offer 2A Income as a one-click switch for independent-trainer self-onboarding.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────── Cross-round themes ────────── -->
+  <div class="themes">
+    <h2>Cross-round patterns &amp; observations</h2>
+
+    <h3>Reviewer clustering</h3>
+    <p>Across rounds, <strong>Phil + Mike cluster on the warmer / hero-ier / power-user dimensions</strong> (Round 1 5A/6A, Round 4 1A Growth + 2C Today). <strong>Craig leans calmer / operational / consensus-aware</strong> (Round 3 5C user-toggle, Round 1 5B/6B). Mike alone preferred lighter chrome in Round 1 (3B sidebar, 4B initials-only). Net effect: the locked design lands on the warmer end overall, with Craig's calmer preferences surfacing in genuinely safer-to-personalize areas (density).</p>
+
+    <h3>The Round 3 → Round 4 pivot</h3>
+    <p>Craig's persona-specific KPIs feedback (originating from ChatGPT research) reshaped how we think about dashboard content. Round 3 still answered useful layout questions (schedule placement, density, empty state) but its KPI picks became "generic fallback" — Round 4 carries the persona-flavored picks forward and seeds the per-role dashboard templates we'll ship in Phase 7i.</p>
+
+    <h3>ChatGPT recommendations were 1-for-3</h3>
+    <p>Round 4 tested whether reviewers would follow ChatGPT's recommendation packs (1A Growth for gym, 2A Income for trainer). The result: <strong>1A Growth landed unanimously, but no reviewer picked 2A Income for trainers.</strong> Real users care about today's sessions and earnings, not long-arc revenue per client — at least at staff-trainer scale. The dashboard for an independent practitioner is a different product mode (2A would be its default). Worth keeping in mind when we ship trainer-onboarding: a single question ("Are you a staff trainer or independent?") could switch the dashboard preset.</p>
+
+    <h3>One real product expansion (parked)</h3>
+    <p><strong>Phase 7j — Per-business header branding</strong> emerged from Phil's Round 2 comment on the business switcher. Each business gets its own logo + brand color in the header to confirm context. Parked in <code>fitquake2/docs/PLAN.md</code> at commit <code>01ec1f7</code>. No schema churn (leverages Phase 6.5.G file storage); ~1 PW estimated.</p>
+
+    <h3>"Compromise options" are real and worth designing for</h3>
+    <p>Round 3 Dim 5 (density) ended up as a 1-1-1 split where each reviewer picked a different option — yet Craig's pick of <strong>5C "User toggle"</strong> satisfies all three. Worth noting for future rounds: when a dimension is genuinely a personal preference (density, theme, default landing tab), offer a user-toggle option explicitly rather than forcing the team to settle on one default.</p>
+  </div>
+
+  <footer>
+    <span>Last updated: 2026-05-17 · Fitquake design decisions</span>
+    <span>
+      <a href="https://github.com/whitepa/fitquake-mocks" target="_blank" rel="noopener">repo →</a>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>
