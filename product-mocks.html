@@ -773,18 +773,21 @@
   </header>
   <div class="breadcrumb"><a href="./">← Back to decision rounds</a> · <a href="results.html">View results →</a></div>
 
-  <h1>What the product looks like with all decisions applied</h1>
+  <h1>Five role-adaptive views inside the unified app</h1>
   <p class="lede">
-    This page renders the five most important screens of Fitquake using the locked design decisions
-    from Rounds 1-4. It's a visual reference for what we'll be building in Phase 7 — not interactive,
-    but pixel-faithful to the chosen palette, components, layouts, and persona patterns.
+    Fitquake ships as <strong>one end-user app at <code>/app/</code></strong> serving every audience —
+    members, trainers, gym staff, owners. The UI you see after login adapts to your highest role at
+    the active business. There is no separate <code>/admin/</code> or <code>/portal/</code> app; all
+    five views below render inside the same SPA, the same shell, the same auth state, the same business
+    switcher. The Fitquake SaaS operator console (tenant management for Phil/Craig/Mike) will be a
+    separate app at <code>/console/</code> post-v1 — different audience, different IAM perimeter.
   </p>
 
   <div class="quick-jump">
-    <a href="#login">1 · Login</a>
-    <a href="#admin">2 · Gym admin dashboard</a>
-    <a href="#trainer">3 · Trainer workspace</a>
-    <a href="#member">4 · Member portal</a>
+    <a href="#login">1 · Login (everyone)</a>
+    <a href="#admin">2 · Owner view</a>
+    <a href="#trainer">3 · Trainer view</a>
+    <a href="#member">4 · Member view</a>
     <a href="#states">5 · Loading + empty states</a>
   </div>
 
@@ -792,15 +795,16 @@
   <section class="screen" id="login">
     <div class="screen-meta">
       <span class="screen-no">1</span>
-      <h2>Login</h2>
+      <h2>Login — single entry point for everyone</h2>
     </div>
     <div class="decisions">
       Decisions visible: <code>R1 1A palette + 1D logo</code> <code>R2 1D full-bleed</code> <code>R2 4B footer link</code>
     </div>
     <p class="blurb">
-      Full-bleed teal-deep brand background, white card centered. Logo above the form. "Trouble signing in?
-      Reset password" link below the primary action covers password + locked-account + email-issue cases in
-      one place.
+      Members, trainers, gym staff, owners — all log in here at <code>app.fitquake.com/login</code>. Full-bleed
+      teal-deep brand background, white card centered. Logo above the form. "Trouble signing in? Reset password"
+      link covers password + locked-account + email-issue cases in one place. After successful auth, the app
+      resolves the user's highest role at their active business and redirects to the corresponding view.
     </p>
     <div class="browser">
       <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">app.fitquake.com/login</span></div>
@@ -836,16 +840,17 @@
   <section class="screen" id="admin">
     <div class="screen-meta">
       <span class="screen-no">2</span>
-      <h2>Gym admin dashboard</h2>
+      <h2>Owner view of <code>/app/</code></h2>
     </div>
     <div class="decisions">
       Decisions visible: <code>R1 1A+1D · 2C cards · 3A sidebar · 4A avatars</code> <code>R2 5B switcher</code> <code>R3 2A revenue chart · 3B+4D side rail · 5C density</code> <code>R4 1A Growth KPIs</code>
     </div>
     <p class="blurb">
-      Becky logs in and lands here. Dark teal sidebar (Round 1), business switcher with logo (Round 2 + Phase 7j),
-      Growth-pack KPIs (Round 4: Net growth, Churn, MRR, Visits/member, Rev/member), revenue trend chart anchoring
-      the main column, mixed right-rail (Upcoming + Tasks + Alerts). Density toggle in header lets her swap to
-      Compact when she wants.
+      What Becky sees when her highest role at the active business is <strong>OWNER</strong>. Same shell as every
+      other view (dark teal sidebar, header business switcher, 2C card surface, 4A avatars) — what changes is the
+      KPI pack (Round 4 1A Growth: Net growth, Churn, MRR, Visits/member, Rev/member), the revenue trend hero
+      chart (Round 3 2A), and the navigation items she has permission to see. If she's also a member of her own
+      gym, the "View as..." menu lets her flip lenses without re-authenticating.
     </p>
     <div class="browser">
       <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">app.fitquake.com/admin/dashboard</span></div>
@@ -1039,16 +1044,18 @@
   <section class="screen" id="trainer">
     <div class="screen-meta">
       <span class="screen-no">3</span>
-      <h2>Trainer workspace</h2>
+      <h2>Trainer view of <code>/app/</code></h2>
     </div>
     <div class="decisions">
       Decisions visible: <code>R1 5A Start Session hero</code> <code>R4 2C Today KPIs</code> <code>R3 3B+4D side rail</code>
     </div>
     <p class="blurb">
-      Ian's view. Same shell, but trainer-specific nav and the 2C Today KPI pack (Sessions today, Next session,
-      Earnings today, Follow-ups, Earnings MTD). The 5A Start Session hero card centers on his next client at
-      the top of the page — one click to start, one click to see her profile. Below: today's roster with the next
-      session highlighted.
+      What Ian sees when his highest role at the active business is <strong>TRAINER</strong>. Same SPA, same
+      shell — different nav items (Clients, Sessions, Calendar, Programs…), different KPI pack (Round 4 2C
+      Today: Sessions today, Next session, Earnings today, Follow-ups, Earnings MTD), and the 5A Start Session
+      hero card prominent at the top with his next client. Independent trainers (running their own client book)
+      can switch to the 2A Income KPI pack via settings — that's a single role-template flip, not a different
+      app.
     </p>
     <div class="browser">
       <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">app.fitquake.com/trainer/home</span></div>
@@ -1246,16 +1253,17 @@
   <section class="screen" id="member">
     <div class="screen-meta">
       <span class="screen-no">4</span>
-      <h2>Member portal home</h2>
+      <h2>Member view of <code>/app/</code></h2>
     </div>
     <div class="decisions">
-      Decisions visible: <code>R1 6A next-class hero</code> <code>R4 3A Activity KPIs</code> <code>lighter shell (no business switcher; just the member's portal)</code>
+      Decisions visible: <code>R1 6A next-class hero</code> <code>R4 3A Activity KPIs</code> <code>lighter shell</code>
     </div>
     <p class="blurb">
-      What a gym member sees when they sign in to their portal. The next-class hero with countdown + RSVP
-      pulls focus; below it, the 3A Activity KPI strip (Next class · Visits this mo · PT remaining · Goal).
-      No business switcher — members belong to a single gym at a time, and the shell stays lighter than the
-      admin one.
+      What Sara sees when her highest role at the active business is <strong>MEMBER</strong>. Same SPA, same
+      auth state — different nav (Home, Book a class, My schedule, Membership, Billing, Profile), the 6A
+      next-class hero with countdown + RSVP pulls focus, and the lighter 3A Activity KPI strip (Next class ·
+      Visits this mo · PT remaining · Goal) below. Members typically belong to a single gym so the business
+      switcher is hidden by default; for multi-gym members it surfaces normally.
     </p>
     <div class="browser">
       <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">my.fitquake.com/home</span></div>
