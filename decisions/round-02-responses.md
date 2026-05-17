@@ -19,11 +19,57 @@ Status: **OPEN** (collecting responses)
 
 ## Responses
 
-### Phil — _awaiting response_
+### Phil — 2026-05-17
+
+| 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|
+| 1D | 2C | 3B | 4A | 5B |
+
+**Comments:**
+> on 5B, I'm less concerned about the stated risk, as I think we should also support
+> branding on the header for each business. i.e. an individual gym or trainer may
+> have their own logo they'd like to display on the page when that business is activated.
+
+---
 
 ### Craig — _awaiting response_
 
 ### Mike — _awaiting response_
+
+---
+
+## Follow-on implications from Phil's response
+
+### Per-business header branding (from 5B comment)
+
+Phil's comment introduces a new product capability we should scope explicitly: each
+business can supply its own logo/brand color, which is displayed in the header (and
+possibly the sidebar) whenever a user is operating in that business's context. This
+serves two purposes — it mitigates the "which business am I in?" risk inherent to
+the 5B header-dropdown approach, AND it's a real selling point for white-label /
+multi-location operators.
+
+**Legacy schema state:** the `businesses` table has no branding fields today
+(`packages/api/src/db/schema/org.ts:24` confirmed — only `legalName`, `dba`,
+`displayName`, `tz`, `businessType`, Stripe fields).
+
+**Recommended fit:** use the existing file-storage pattern from Phase 6.5.G rather
+than adding new columns. Attach a logo as a `BUSINESS_LOGO`-typed file via
+`object_attachments`; the shell resolves "latest LOGO attachment for business N" at
+load. Brand color could be a single new `brand_color` varchar column on
+`businesses` (#hex), or a row in `object_info` per business. Either keeps the legacy
+schema mostly untouched.
+
+**Scope decision deferred to Round 3 or later:**
+- Should brand color override our chosen palette tokens entirely, or just accent
+  fields (header bar background, button color)?
+- Logo aspect-ratio constraints (square vs. wordmark vs. both)?
+- Fallback when no business logo uploaded (use Fitquake mark? hide entirely?)
+- Free-tier limit (single logo) vs. premium (per-OU branding)?
+
+These are bigger product-direction questions than fit in a Round 1/2 picker. Park
+in `docs/PLAN.md` Phase 7-something or open a new "Per-business branding" round
+once Phase 7a foundation is in.
 
 ---
 
