@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fitquake — Design Options</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --ink-3: #64748b;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.04);
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 48px 32px 96px;
+  }
+  header.page-header {
+    margin-bottom: 48px;
+  }
+  header.page-header .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+  header.page-header h1 {
+    font-size: 34px;
+    margin: 8px 0 12px;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  header.page-header p {
+    margin: 0;
+    color: var(--ink-2);
+    max-width: 720px;
+    line-height: 1.55;
+    font-size: 15px;
+  }
+  header.page-header .hint {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: #ecfeff;
+    border: 1px solid #a5f3fc;
+    border-radius: 8px;
+    color: #155e75;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  header.page-header .hint code {
+    background: rgba(8, 145, 178, 0.12);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  section.dimension {
+    margin-top: 56px;
+  }
+  section.dimension .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  section.dimension .section-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  section.dimension h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  section.dimension p.section-blurb {
+    color: var(--ink-2);
+    margin: 4px 0 24px 50px;
+    font-size: 14px;
+    line-height: 1.55;
+    max-width: 760px;
+  }
+
+  .options {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .option {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .option-header {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: #fafbfc;
+  }
+  .option-label {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    background: var(--ink);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .option-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .option-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+  }
+  .option-note {
+    font-size: 12px;
+    color: var(--ink-3);
+    line-height: 1.5;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+  }
+
+  /* ─── Palette section ─── */
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+  .swatch {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    position: relative;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+  }
+  .swatch span {
+    font-size: 9px;
+    padding: 3px 4px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 3px 0 4px 0;
+    color: var(--ink);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    line-height: 1;
+  }
+  .logo-row {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+  }
+  .logo-row svg { height: 36px; }
+
+  .mini-ui {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    height: 110px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .mini-ui .mini-sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 8px;
+    gap: 6px;
+    font-size: 10px;
+  }
+  .mini-ui .mini-sidebar .mi {
+    padding: 4px 6px;
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .mini-ui .mini-sidebar .mi.active {
+    background: rgba(255, 255, 255, 0.13);
+    color: white;
+    font-weight: 600;
+  }
+  .mini-ui .mini-content {
+    padding: 12px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mini-ui .mini-kpi {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: white;
+  }
+  .mini-ui .mini-kpi .label {
+    font-size: 9px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .mini-ui .mini-kpi .value {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .mini-ui .mini-button {
+    align-self: flex-start;
+    padding: 6px 12px;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 6px;
+  }
+
+  /* ─── Card surface section ─── */
+  .surface-demo {
+    background: #f8fafc;
+    padding: 24px;
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .demo-card {
+    background: white;
+    padding: 14px;
+    border-radius: 8px;
+  }
+  .demo-card .dc-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+    font-weight: 600;
+  }
+  .demo-card .dc-value {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 4px 0 2px;
+    letter-spacing: -0.01em;
+  }
+  .demo-card .dc-trend {
+    font-size: 11px;
+    color: #059669;
+    font-weight: 600;
+  }
+  .surface-shadow .demo-card {
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.06);
+  }
+  .surface-border .demo-card {
+    border: 1px solid var(--border);
+  }
+  .surface-hybrid .demo-card {
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  /* ─── Sidebar treatment ─── */
+  .sidebar-demo {
+    height: 220px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 160px 1fr;
+  }
+  .sb-stage {
+    background: white;
+    padding: 16px;
+  }
+  .sb-list {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 10px;
+    gap: 4px;
+  }
+  .sb-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+  .sb-icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+  /* dark colored */
+  .sb-dark {
+    background: #0E3F3B;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .sb-dark .sb-item.active {
+    background: rgba(255, 255, 255, 0.13);
+    color: white;
+  }
+  .sb-dark .sb-brand {
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 10px 14px;
+    letter-spacing: 0.04em;
+  }
+  /* light glass */
+  .sb-light {
+    background: #f8fafc;
+    color: var(--ink-2);
+    border-right: 1px solid var(--border);
+  }
+  .sb-light .sb-item.active {
+    background: white;
+    color: #0d9488;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  }
+  .sb-light .sb-brand {
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 10px 14px;
+  }
+  /* icon rail */
+  .sb-rail {
+    background: #0E3F3B;
+    color: rgba(255, 255, 255, 0.6);
+    width: 64px;
+    padding: 14px 0;
+    gap: 8px;
+    align-items: center;
+  }
+  .sb-rail .sb-icon-tile {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sb-rail .sb-icon-tile.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+  }
+  .sb-rail .sb-icon { width: 18px; height: 18px; opacity: 0.7; }
+  .sb-rail .sb-icon-tile.active .sb-icon { opacity: 1; }
+  .sidebar-demo.rail { grid-template-columns: 64px 1fr; }
+
+  /* ─── Avatars ─── */
+  .avatar-row {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 8px 0;
+  }
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .avatar.ring { box-shadow: 0 0 0 2px white, 0 0 0 4px #14b8a6; }
+  .avatar-photo {
+    background: linear-gradient(135deg, #94a3b8, #475569);
+  }
+  .avatar-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 32%, #fde68a 0 14%, transparent 15%),
+      radial-gradient(circle at 50% 80%, #fde68a 0 38%, transparent 40%),
+      linear-gradient(135deg, #94a3b8, #475569);
+  }
+  .avatar.av-A { background: linear-gradient(135deg, #f97316, #ef4444); }
+  .avatar.av-B { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+  .avatar.av-C { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+  .avatar.av-D { background: linear-gradient(135deg, #a3e635, #65a30d); }
+
+  /* ─── Trainer Start Session ─── */
+  .start-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .start-card.hero {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 16px;
+    align-items: center;
+  }
+  .start-card.hero .avatar { width: 88px; height: 88px; font-size: 26px; }
+  .start-card.hero .meta { display: flex; flex-direction: column; gap: 4px; }
+  .start-card.hero .meta .small { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .start-card.hero .meta .name { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+  .start-card.hero .meta .ses { font-size: 13px; color: var(--ink-2); }
+  .start-card.hero .actions { display: flex; gap: 8px; margin-top: 8px; }
+  .start-card .btn-primary {
+    background: #0d9488;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .start-card .btn-ghost {
+    background: white;
+    color: var(--ink-2);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+  }
+  .start-list {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .start-list .row {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .start-list .row:last-child { border-bottom: 0; }
+  .start-list .row.next { background: #f0fdfa; }
+  .start-list .row .meta { display: flex; flex-direction: column; }
+  .start-list .row .meta .name { font-size: 14px; font-weight: 600; }
+  .start-list .row .meta .when { font-size: 12px; color: var(--ink-3); }
+  .start-list .row .pill {
+    background: #0d9488;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .start-list .row.queued .pill {
+    background: white;
+    color: var(--ink-2);
+    border: 1px solid var(--border);
+  }
+  .start-list .row .meta .name .sched-line { color: var(--ink-3); font-weight: 400; font-size: 12px; }
+
+  /* ─── Member portal hero ─── */
+  .member-hero {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .member-hero .strip {
+    background: linear-gradient(135deg, #0d9488, #14b8a6);
+    color: white;
+    padding: 22px 22px 26px;
+  }
+  .member-hero .strip .eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.85;
+    font-weight: 600;
+  }
+  .member-hero .strip h3 {
+    font-size: 22px;
+    margin: 6px 0 4px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .member-hero .strip .sub { font-size: 13px; opacity: 0.9; }
+  .member-hero .strip .countdown {
+    margin-top: 14px;
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .member-hero .strip .actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+  }
+  .member-hero .strip .btn {
+    background: white;
+    color: #0d9488;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .member-hero .strip .btn.ghost {
+    background: rgba(255, 255, 255, 0.18);
+    color: white;
+  }
+  .member-hero .footer {
+    padding: 16px 22px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .member-hero .footer .stat .v { display: block; font-size: 18px; font-weight: 700; color: var(--ink); line-height: 1; margin-bottom: 2px; }
+  .member-hero .footer .stat .l { color: var(--ink-3); font-size: 11px; }
+
+  .member-snapshot {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .member-snapshot .greet { font-size: 18px; font-weight: 700; }
+  .member-snapshot .sub { font-size: 13px; color: var(--ink-3); margin-bottom: 16px; }
+  .member-snapshot .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .member-snapshot .tile {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .member-snapshot .tile .v { font-size: 18px; font-weight: 700; line-height: 1; }
+  .member-snapshot .tile .l { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+  .member-snapshot .progress {
+    margin-top: 16px;
+    padding: 12px;
+    background: #f0fdfa;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #115e59;
+  }
+  .member-snapshot .progress .bar {
+    margin-top: 8px;
+    height: 6px;
+    background: rgba(20, 184, 166, 0.18);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .member-snapshot .progress .bar > div { height: 100%; width: 64%; background: #0d9488; border-radius: 999px; }
+
+  footer.page-footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--ink-3);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  footer.page-footer code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="eyebrow">Fitquake · UI direction</div>
+    <h1>Design options — pick one per dimension</h1>
+    <p>Each section below shows 2–4 alternatives for one design dimension. Once you've made
+       a pick on each, the brand color, sidebar style, card treatment, avatar pattern, and
+       core hero components flow into the Tailwind tokens and component primitives I build
+       in Phase 7a.</p>
+    <div class="hint">
+      Reply with shorthand like <code>1B, 2C, 3A, 4C, 5A, 6B</code>. Anything you don't choose, I'll
+      use the one I think pairs best with your other picks.
+    </div>
+  </header>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 1. Brand palette + logo                                         -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension">
+    <div class="section-head">
+      <span class="section-num">1</span>
+      <h2>Brand palette + logo</h2>
+    </div>
+    <p class="section-blurb">
+      Each card pairs a palette with a logo treatment. Palette and logo are independently swappable —
+      if you like the palette of 1A but the logo of 1C, say so.
+    </p>
+
+    <div class="options">
+
+      <!-- 1A — Teal Forward -->
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Teal forward</span>
+          <span class="option-label">1A</span>
+        </div>
+        <div class="option-body">
+          <div class="swatches">
+            <div class="swatch" style="background:#0D9488"><span>#0D9488</span></div>
+            <div class="swatch" style="background:#14B8A6"><span>#14B8A6</span></div>
+            <div class="swatch" style="background:#0E3F3B"><span>#0E3F3B</span></div>
+            <div class="swatch" style="background:#F1F5F9"><span>#F1F5F9</span></div>
+            <div class="swatch" style="background:#0F172A"><span>#0F172A</span></div>
+          </div>
+          <div class="logo-row">
+            <svg viewBox="0 0 220 50" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4,6)">
+                <path d="M20 0 L6 22 H16 L10 38 L28 14 H18 Z" fill="#0D9488" />
+              </g>
+              <text x="44" y="34" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="800" font-size="24" letter-spacing="1.5" fill="#0E3F3B">FITQUAKE</text>
+            </svg>
+          </div>
+          <div class="mini-ui">
+            <div class="mini-sidebar" style="background:#0E3F3B; color:white;">
+              <div class="mi active">Dashboard</div>
+              <div class="mi">People</div>
+              <div class="mi">Schedule</div>
+              <div class="mi">Reports</div>
+            </div>
+            <div class="mini-content">
+              <div class="mini-kpi">
+                <div>
+                  <div class="label">Members</div>
+                  <div class="value">1,250</div>
+                </div>
+                <div class="mini-button" style="background:#0D9488">Action</div>
+              </div>
+            </div>
+          </div>
+          <p class="option-note">Closest match to the ChatGPT inspiration screenshots. Calm, healthcare-adjacent. Teal evokes water/recovery; dark teal sidebar grounds the chrome.</p>
+        </div>
+      </article>
+
+      <!-- 1B — Steel + Electric Lime -->
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Steel + electric lime</span>
+          <span class="option-label">1B</span>
+        </div>
+        <div class="option-body">
+          <div class="swatches">
+            <div class="swatch" style="background:#334155"><span>#334155</span></div>
+            <div class="swatch" style="background:#A3E635"><span>#A3E635</span></div>
+            <div class="swatch" style="background:#0F172A"><span>#0F172A</span></div>
+            <div class="swatch" style="background:#F8FAFC"><span>#F8FAFC</span></div>
+            <div class="swatch" style="background:#475569"><span>#475569</span></div>
+          </div>
+          <div class="logo-row">
+            <svg viewBox="0 0 220 50" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4,8)">
+                <rect x="0" y="14" width="3" height="14" fill="#A3E635" />
+                <rect x="6" y="8" width="3" height="20" fill="#A3E635" />
+                <rect x="12" y="2" width="3" height="26" fill="#A3E635" />
+                <rect x="18" y="10" width="3" height="18" fill="#A3E635" />
+                <rect x="24" y="16" width="3" height="12" fill="#A3E635" />
+              </g>
+              <text x="40" y="34" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="900" font-size="24" letter-spacing="0.5" fill="#0F172A">FITQUAKE</text>
+            </svg>
+          </div>
+          <div class="mini-ui">
+            <div class="mini-sidebar" style="background:#0F172A; color:white;">
+              <div class="mi active">Dashboard</div>
+              <div class="mi">People</div>
+              <div class="mi">Schedule</div>
+              <div class="mi">Reports</div>
+            </div>
+            <div class="mini-content">
+              <div class="mini-kpi">
+                <div>
+                  <div class="label">Members</div>
+                  <div class="value">1,250</div>
+                </div>
+                <div class="mini-button" style="background:#A3E635; color:#0F172A">Action</div>
+              </div>
+            </div>
+          </div>
+          <p class="option-note">Legacy "seismic energy" nod via the bar-chart/quake mark. Slate + lime feels athletic and high-performance. Lime is a strong CTA color, very high contrast.</p>
+        </div>
+      </article>
+
+      <!-- 1C — Indigo + Coral -->
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Indigo + coral</span>
+          <span class="option-label">1C</span>
+        </div>
+        <div class="option-body">
+          <div class="swatches">
+            <div class="swatch" style="background:#4F46E5"><span>#4F46E5</span></div>
+            <div class="swatch" style="background:#F97316"><span>#F97316</span></div>
+            <div class="swatch" style="background:#1E1B4B"><span>#1E1B4B</span></div>
+            <div class="swatch" style="background:#F5F3FF"><span>#F5F3FF</span></div>
+            <div class="swatch" style="background:#0F172A"><span>#0F172A</span></div>
+          </div>
+          <div class="logo-row">
+            <svg viewBox="0 0 220 50" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(6,8)">
+                <circle cx="16" cy="16" r="14" fill="none" stroke="#4F46E5" stroke-width="3"/>
+                <path d="M22 22 L30 30" stroke="#4F46E5" stroke-width="3" stroke-linecap="round"/>
+                <path d="M8 16 L13 16 L16 10 L20 22 L23 16 L26 16" stroke="#F97316" stroke-width="2" fill="none" stroke-linejoin="round"/>
+              </g>
+              <text x="46" y="34" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="800" font-size="24" letter-spacing="1" fill="#1E1B4B">FITQUAKE</text>
+            </svg>
+          </div>
+          <div class="mini-ui">
+            <div class="mini-sidebar" style="background:#1E1B4B; color:white;">
+              <div class="mi active">Dashboard</div>
+              <div class="mi">People</div>
+              <div class="mi">Schedule</div>
+              <div class="mi">Reports</div>
+            </div>
+            <div class="mini-content">
+              <div class="mini-kpi">
+                <div>
+                  <div class="label">Members</div>
+                  <div class="value">1,250</div>
+                </div>
+                <div class="mini-button" style="background:#F97316">Action</div>
+              </div>
+            </div>
+          </div>
+          <p class="option-note">More software-y / SaaS-y. Indigo is enterprise-trusted; coral provides warm CTA energy. The "Q with pulse" logo references both the wordmark and a heart-rate trace.</p>
+        </div>
+      </article>
+
+      <!-- 1D — Carbon + Amber -->
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Carbon + amber</span>
+          <span class="option-label">1D</span>
+        </div>
+        <div class="option-body">
+          <div class="swatches">
+            <div class="swatch" style="background:#171717"><span>#171717</span></div>
+            <div class="swatch" style="background:#F59E0B"><span>#F59E0B</span></div>
+            <div class="swatch" style="background:#0A0A0A"><span>#0A0A0A</span></div>
+            <div class="swatch" style="background:#FAFAFA"><span>#FAFAFA</span></div>
+            <div class="swatch" style="background:#A8A29E"><span>#A8A29E</span></div>
+          </div>
+          <div class="logo-row">
+            <svg viewBox="0 0 220 50" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4,4)">
+                <polygon points="20,0 38,11 38,29 20,40 2,29 2,11" fill="#171717"/>
+                <path d="M12 20 L18 14 L24 26 L28 20" stroke="#F59E0B" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+              </g>
+              <text x="50" y="34" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="900" font-size="24" letter-spacing="0.5" fill="#0A0A0A">FITQUAKE</text>
+            </svg>
+          </div>
+          <div class="mini-ui">
+            <div class="mini-sidebar" style="background:#171717; color:white;">
+              <div class="mi active">Dashboard</div>
+              <div class="mi">People</div>
+              <div class="mi">Schedule</div>
+              <div class="mi">Reports</div>
+            </div>
+            <div class="mini-content">
+              <div class="mini-kpi">
+                <div>
+                  <div class="label">Members</div>
+                  <div class="value">1,250</div>
+                </div>
+                <div class="mini-button" style="background:#F59E0B; color:#171717">Action</div>
+              </div>
+            </div>
+          </div>
+          <p class="option-note">Premium / boutique feel — think Equinox, SoulCycle. The hex mark + seismic line says "quake" geometrically. Amber CTA pops hard against carbon.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 2. Card surface treatment                                       -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension">
+    <div class="section-head">
+      <span class="section-num">2</span>
+      <h2>Card surface treatment</h2>
+    </div>
+    <p class="section-blurb">
+      The default look of every KPI card, content card, panel, and dialog. This decision compounds —
+      it touches hundreds of surfaces.
+    </p>
+    <div class="options">
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Soft shadow on white</span>
+          <span class="option-label">2A</span>
+        </div>
+        <div class="option-body">
+          <div class="surface-demo surface-shadow">
+            <div class="demo-card">
+              <div class="dc-label">Monthly Revenue</div>
+              <div class="dc-value">$126,430</div>
+              <div class="dc-trend">↑ 4.2%</div>
+            </div>
+            <div class="demo-card">
+              <div class="dc-label">Active Members</div>
+              <div class="dc-value">1,250</div>
+              <div class="dc-trend">↑ 1.8%</div>
+            </div>
+          </div>
+          <p class="option-note">Matches the ChatGPT inspiration. Cards "float." Warm, friendly. Slight performance/visual cost on long scrolling lists.</p>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Subtle border, no shadow</span>
+          <span class="option-label">2B</span>
+        </div>
+        <div class="option-body">
+          <div class="surface-demo surface-border">
+            <div class="demo-card">
+              <div class="dc-label">Monthly Revenue</div>
+              <div class="dc-value">$126,430</div>
+              <div class="dc-trend">↑ 4.2%</div>
+            </div>
+            <div class="demo-card">
+              <div class="dc-label">Active Members</div>
+              <div class="dc-value">1,250</div>
+              <div class="dc-trend">↑ 1.8%</div>
+            </div>
+          </div>
+          <p class="option-note">Notion / Linear style. Quieter, more "tool-like." Better for dense screens. Doesn't compete with content for attention.</p>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Border + tiny shadow (hybrid)</span>
+          <span class="option-label">2C</span>
+        </div>
+        <div class="option-body">
+          <div class="surface-demo surface-hybrid">
+            <div class="demo-card">
+              <div class="dc-label">Monthly Revenue</div>
+              <div class="dc-value">$126,430</div>
+              <div class="dc-trend">↑ 4.2%</div>
+            </div>
+            <div class="demo-card">
+              <div class="dc-label">Active Members</div>
+              <div class="dc-value">1,250</div>
+              <div class="dc-trend">↑ 1.8%</div>
+            </div>
+          </div>
+          <p class="option-note">Best-of-both. Border defines edges crisply on every background; tiny shadow gives gentle depth. Most modern SaaS converging on this pattern.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 3. Sidebar treatment                                            -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension">
+    <div class="section-head">
+      <span class="section-num">3</span>
+      <h2>Sidebar treatment</h2>
+    </div>
+    <p class="section-blurb">
+      The persistent nav across admin and trainer workspaces. Renders inside every authed screen.
+    </p>
+    <div class="options">
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Dark colored (inspiration default)</span>
+          <span class="option-label">3A</span>
+        </div>
+        <div class="option-body">
+          <div class="sidebar-demo">
+            <div class="sb-dark sb-list">
+              <div class="sb-brand">FITQUAKE</div>
+              <div class="sb-item"><span class="sb-icon"></span>Dashboard</div>
+              <div class="sb-item active"><span class="sb-icon"></span>People</div>
+              <div class="sb-item"><span class="sb-icon"></span>Schedule</div>
+              <div class="sb-item"><span class="sb-icon"></span>Billing</div>
+              <div class="sb-item"><span class="sb-icon"></span>Reports</div>
+            </div>
+            <div class="sb-stage"></div>
+          </div>
+          <p class="option-note">Matches the inspiration. Strong brand presence. Works well with all four palette options. Slightly more visual weight on the page.</p>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Light glass</span>
+          <span class="option-label">3B</span>
+        </div>
+        <div class="option-body">
+          <div class="sidebar-demo">
+            <div class="sb-light sb-list">
+              <div class="sb-brand">FITQUAKE</div>
+              <div class="sb-item"><span class="sb-icon"></span>Dashboard</div>
+              <div class="sb-item active"><span class="sb-icon"></span>People</div>
+              <div class="sb-item"><span class="sb-icon"></span>Schedule</div>
+              <div class="sb-item"><span class="sb-icon"></span>Billing</div>
+              <div class="sb-item"><span class="sb-icon"></span>Reports</div>
+            </div>
+            <div class="sb-stage"></div>
+          </div>
+          <p class="option-note">Quieter, monochrome. Active item carries the brand color. Reads as a tool rather than a destination. Better for power users.</p>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Icon-only rail (collapsed default)</span>
+          <span class="option-label">3C</span>
+        </div>
+        <div class="option-body">
+          <div class="sidebar-demo rail">
+            <div class="sb-rail sb-list" style="display:flex; flex-direction:column;">
+              <div class="sb-icon-tile"><span class="sb-icon"></span></div>
+              <div class="sb-icon-tile active"><span class="sb-icon"></span></div>
+              <div class="sb-icon-tile"><span class="sb-icon"></span></div>
+              <div class="sb-icon-tile"><span class="sb-icon"></span></div>
+              <div class="sb-icon-tile"><span class="sb-icon"></span></div>
+            </div>
+            <div class="sb-stage"></div>
+          </div>
+          <p class="option-note">64px icon rail with hover-tooltips. Maximizes content area. Most demanding on icon legibility / users learning the icon-to-route mapping.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 4. Avatar style                                                 -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension">
+    <div class="section-head">
+      <span class="section-num">4</span>
+      <h2>Avatar style</h2>
+    </div>
+    <p class="section-blurb">
+      Avatars appear on every member, trainer, lead, and staff row. The fallback (when no photo
+      uploaded) is what we'll see 60–80% of the time.
+    </p>
+    <div class="options">
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Photo + colored ring</span>
+          <span class="option-label">4A</span>
+        </div>
+        <div class="option-body">
+          <div class="avatar-row">
+            <div class="avatar avatar-photo ring"></div>
+            <div class="avatar av-A ring">AS</div>
+            <div class="avatar av-C ring">JM</div>
+            <div class="avatar av-D ring">RB</div>
+          </div>
+          <p class="option-note">Photo when available, gradient + initials when not. Active/online state via ring color. Ring uses brand accent.</p>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Gradient initials only</span>
+          <span class="option-label">4B</span>
+        </div>
+        <div class="option-body">
+          <div class="avatar-row">
+            <div class="avatar av-B">BS</div>
+            <div class="avatar av-A">AS</div>
+            <div class="avatar av-C">JM</div>
+            <div class="avatar av-D">RB</div>
+          </div>
+          <p class="option-note">Skip photos entirely (initials + deterministic gradient from name hash). Privacy-friendly. Faster to render. Cohesive. No "missing photo" awkwardness.</p>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Photo, no ring (hybrid fallback)</span>
+          <span class="option-label">4C</span>
+        </div>
+        <div class="option-body">
+          <div class="avatar-row">
+            <div class="avatar avatar-photo"></div>
+            <div class="avatar av-A">AS</div>
+            <div class="avatar av-C">JM</div>
+            <div class="avatar av-D">RB</div>
+          </div>
+          <p class="option-note">Photo when uploaded, gradient + initials fallback otherwise. No ring decoration — cleanest, lowest visual noise. Most flexible: ring can be added per-context for status.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 5. Trainer "Start Session" card                                 -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension">
+    <div class="section-head">
+      <span class="section-num">5</span>
+      <h2>Trainer "Start Session" surface</h2>
+    </div>
+    <p class="section-blurb">
+      Per your feedback: rename "Check In" to "Start Session" and center on the person/session the
+      trainer is about to run. Two density options.
+    </p>
+    <div class="options">
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Hero card (person-centric)</span>
+          <span class="option-label">5A</span>
+        </div>
+        <div class="option-body">
+          <div class="start-card hero">
+            <div class="avatar av-A" style="width:72px; height:72px; font-size:22px;">AS</div>
+            <div>
+              <div class="meta">
+                <span class="small">Next Session · 9:30 AM</span>
+                <span class="name">Amy Smith</span>
+                <span class="ses">Strength · Pkg: 10 sessions · 4 remaining</span>
+              </div>
+              <div class="actions">
+                <span class="btn-primary">Start Session</span>
+                <span class="btn-ghost">View profile</span>
+              </div>
+            </div>
+          </div>
+          <p class="option-note">One client, prominent. Reads at a glance: "Amy, 9:30, you have 4 sessions left, hit Start." Best when trainer's day has gaps between sessions.</p>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Today's roster (list)</span>
+          <span class="option-label">5B</span>
+        </div>
+        <div class="option-body">
+          <div class="start-list">
+            <div class="row next">
+              <div class="avatar av-A" style="width:38px; height:38px; font-size:12px;">AS</div>
+              <div class="meta">
+                <span class="name">Amy Smith <span class="sched-line">· Strength</span></span>
+                <span class="when">9:30 AM · 4 of 10 sessions</span>
+              </div>
+              <span class="pill">Start</span>
+            </div>
+            <div class="row queued">
+              <div class="avatar av-C" style="width:38px; height:38px; font-size:12px;">JM</div>
+              <div class="meta">
+                <span class="name">Jordan Miller <span class="sched-line">· Mobility</span></span>
+                <span class="when">10:30 AM · drop-in</span>
+              </div>
+              <span class="pill">Start</span>
+            </div>
+            <div class="row queued">
+              <div class="avatar av-D" style="width:38px; height:38px; font-size:12px;">RB</div>
+              <div class="meta">
+                <span class="name">Rachel Brown <span class="sched-line">· Strength</span></span>
+                <span class="when">11:30 AM · 7 of 10 sessions</span>
+              </div>
+              <span class="pill">Start</span>
+            </div>
+          </div>
+          <p class="option-note">All today's sessions at once, "next" row highlighted. Better when trainer runs many back-to-back. The Start pill becomes the primary action only on the next row.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <!-- 6. Member portal hero                                           -->
+  <!-- ────────────────────────────────────────────────────────────── -->
+  <section class="dimension">
+    <div class="section-head">
+      <span class="section-num">6</span>
+      <h2>Member portal hero</h2>
+    </div>
+    <p class="section-blurb">
+      First thing a member sees when they log in. Sets the tone of the entire member experience.
+    </p>
+    <div class="options" style="grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));">
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Next class hero (activity-forward)</span>
+          <span class="option-label">6A</span>
+        </div>
+        <div class="option-body">
+          <div class="member-hero">
+            <div class="strip">
+              <div class="eyebrow">Your next class</div>
+              <h3>Strength &amp; Conditioning</h3>
+              <div class="sub">with Ian Wright · Main Studio</div>
+              <div class="countdown">Starts in 2h 14m · Tomorrow 9:30 AM</div>
+              <div class="actions">
+                <span class="btn">I'm coming</span>
+                <span class="btn ghost">Reschedule</span>
+              </div>
+            </div>
+            <div class="footer">
+              <div class="stat"><span class="v">12</span><span class="l">Visits this month</span></div>
+              <div class="stat"><span class="v">May 28</span><span class="l">Next bill</span></div>
+              <div class="stat"><span class="v">Gold</span><span class="l">Membership</span></div>
+            </div>
+          </div>
+          <p class="option-note">"What am I doing next?" mindset. Big visible RSVP. Membership/billing recede to a strip below. Great for engaged members who book regularly.</p>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="option-header">
+          <span class="option-name">Snapshot (journey-forward)</span>
+          <span class="option-label">6B</span>
+        </div>
+        <div class="option-body">
+          <div class="member-snapshot">
+            <div class="greet">Hi Becky 👋</div>
+            <div class="sub">Here's where you stand this week.</div>
+            <div class="grid">
+              <div class="tile"><div class="v">12</div><div class="l">Visits this month</div></div>
+              <div class="tile"><div class="v">4 / 10</div><div class="l">PT sessions used</div></div>
+              <div class="tile"><div class="v">May 28</div><div class="l">Next bill · $89</div></div>
+              <div class="tile"><div class="v">Gold</div><div class="l">Membership</div></div>
+            </div>
+            <div class="progress">
+              <div>You're 64% to your monthly goal of 18 visits — nice work.</div>
+              <div class="bar"><div></div></div>
+            </div>
+          </div>
+          <p class="option-note">"How am I doing?" mindset. Greets, summarizes, motivates. Class booking lives one click deeper. Better for casual members and personal-progress framing.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <p>
+      How to respond: shorthand like <code>1B, 2C, 3A, 4C, 5A, 6B</code> works perfectly.
+      If you want to mix-and-match within a card (e.g., 1A palette + 1C logo), just say so.
+      Anything you don't pick, I'll choose the option I think best pairs with your picks and call
+      it out.
+    </p>
+    <p style="margin-top:14px;">
+      Once locked, I'll update <code>packages/web/tailwind.config.ts</code> and
+      <code>packages/web/src/globals.css</code> with the chosen tokens, then install TanStack
+      Router and start building the chosen sidebar + cards in 7a.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>
