@@ -55,6 +55,67 @@ Notable pairing: **1D KPIs + 4D right rail** = both "small section from each are
 
 ---
 
+## Themes from feedback (not a response)
+
+### Persona-specific KPIs (from Craig, 2026-05-17)
+
+Craig surfaced a persona-driven insight — the dashboard's KPI strip (Round 3 Dim 1) and possibly its hero chart (Dim 2) and right-rail (Dim 4) should be **different by persona**, not picked once globally:
+
+**For an individual trainer:**
+- MRR (predictable income)
+- Average client lifetime / retention
+- Utilization %
+- Revenue per client
+- Active clients
+
+**For a subscription gym (manager view):**
+- Net membership growth (joins minus cancellations)
+- Monthly churn %
+- Visits per member (engagement / leading indicator of churn)
+- MRR
+- Revenue per member (PT, classes, retail)
+
+If simplified to 3:
+- **Trainer:** MRR · Avg client lifetime · Utilization %
+- **Gym:** Net member growth · Churn % · Visits/member
+
+Phil: agreed at high level — "the information presented needs to be geared towards the persona. An individual trainer needs different info than a gym manager."
+
+### Implication for Round 3
+
+- **Round 3 Dims 3, 5, 6 stay universal** — schedule placement, density, empty state are about layout/chrome, not persona-specific content.
+- **Round 3 Dims 1, 2, 4 likely become persona-flavored** — KPIs, hero chart, right-rail content all vary by persona.
+- **What's already locked from Round 3 doesn't need to be re-litigated.** Phil's 1D Mixed pick + 2A Revenue trend become reasonable "generic / fallback / new-tenant default" — what you see before you've picked a persona, or what shows on a multi-persona admin's home screen.
+- **Round 4 (proposed) carries the persona-specific picks forward.** See proposal below.
+
+---
+
+## Proposed Round 4 — Persona-specific dashboards
+
+Three personas, each gets its own KPI strip (and maybe hero chart + right rail). Pick from 2-3 preset packs per persona to keep the picker tight.
+
+**Gym admin (subscription gym manager):**
+- A: Growth (Net member growth, Churn %, MRR, Visits/member, Rev/member) — ChatGPT recommendation
+- B: Health (Active members, MRR, PT utilization, 30d retention, 90d retention)
+- C: Today (Check-ins today, Bookings, Cash today, Tasks due, Alerts)
+
+**Trainer (individual or staff trainer):**
+- A: Income (MRR, Rev/client, Sessions this month, Earnings MTD, Utilization)
+- B: Retention (Active clients, Avg lifetime, No-show rate, Renewals due, Engagement)
+- C: Today (Sessions today, Next session, Earnings today, Follow-ups due, Today's revenue)
+
+**Member portal (gym member self-service):**
+- A: Activity (Next class, Visits this month, Sessions remaining, Goal progress)
+- B: Account (Membership, Next bill, Sessions remaining, Recent classes)
+- C: Achievement (Streak days, Personal records, Visits goal, Class history)
+
+Backend already supports per-role widget configuration via Phase 6.5.H (role templates +
+per-user placement). Round 4 picks would seed the default role templates for the three personas.
+
+This is a proposal — awaiting Phil's call to open Round 4 with this structure.
+
+---
+
 ## Synthesis (to be filled in once all responses are in)
 
 _Will list:_
