@@ -233,6 +233,31 @@
   }
   footer a:hover { color: var(--brand); border-color: var(--brand); }
 
+  .product-mocks-cta {
+    display: block;
+    margin: 8px 0 32px;
+    padding: 18px 22px;
+    background: #0E3F3B;
+    color: white;
+    border: 2px solid #0E3F3B;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    transition: background-color 120ms, transform 120ms;
+  }
+  .product-mocks-cta:hover {
+    background: #0d9488; border-color: #0d9488;
+    transform: translateY(-1px);
+  }
+  .product-mocks-cta .cta-sub {
+    display: block;
+    margin-top: 4px;
+    color: rgba(255, 255, 255, 0.78);
+    font-weight: 500; font-size: 13px;
+    line-height: 1.5;
+  }
+
   @media (max-width: 700px) {
     .page { padding: 32px 16px 64px; }
     h1 { font-size: 26px; }
@@ -270,6 +295,11 @@
     Live synthesis of every Fitquake design decision round — per-reviewer picks, where everyone aligned,
     where the team split, and the recommended lock for each round. Updated as new responses come in.
   </p>
+
+  <a href="product-mocks.html" class="product-mocks-cta">
+    🎨 See the product with these decisions applied →
+    <span class="cta-sub">High-fidelity mocks of login, dashboards, member portal, and edge states.</span>
+  </a>
 
   <!-- ────────── Round 1 ────────── -->
   <section class="round-block">

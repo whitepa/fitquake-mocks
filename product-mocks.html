@@ -1,0 +1,1623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fitquake · Product Mocks (Locked Design)</title>
+<style>
+  /* ═════════════════════════════════════════════════════════════
+     Design tokens — locked from Rounds 1-4
+  ═════════════════════════════════════════════════════════════ */
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --ink-3: #64748b;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+
+    /* Brand: 1A Teal Forward palette */
+    --brand: #0d9488;
+    --brand-hover: #0f766e;
+    --brand-tint: #ccfbf1;
+    --brand-soft: #f0fdfa;
+    --brand-deep: #0E3F3B;
+
+    /* Status colors */
+    --success: #059669;
+    --warn: #f59e0b;
+    --danger: #dc2626;
+    --info: #6366f1;
+
+    /* Surface treatment: 2C border + tiny shadow hybrid */
+    --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.04);
+    --shadow-elevated: 0 2px 4px rgba(15, 23, 42, 0.06), 0 12px 28px rgba(15, 23, 42, 0.08);
+    --radius: 8px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+
+  /* ═════════════════════════════════════════════════════════════
+     Page chrome (this is the documentation, not the product)
+  ═════════════════════════════════════════════════════════════ */
+  .page { max-width: 1200px; margin: 0 auto; padding: 56px 32px 96px; }
+  header.brand {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+  }
+  header.brand svg { height: 28px; }
+  header.brand .name {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.16em; color: var(--ink);
+  }
+  header.brand .name .sub {
+    color: var(--ink-3); font-weight: 500; letter-spacing: 0.04em; margin-left: 8px;
+  }
+  .breadcrumb { margin-top: 4px; font-size: 13px; color: var(--ink-3); }
+  .breadcrumb a { color: var(--brand); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  h1 {
+    font-size: 34px; font-weight: 700; letter-spacing: -0.02em;
+    margin: 28px 0 12px;
+  }
+  p.lede {
+    color: var(--ink-2); line-height: 1.6; font-size: 15px;
+    max-width: 760px; margin: 0 0 16px;
+  }
+  .quick-jump {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 24px 0 48px;
+  }
+  .quick-jump a {
+    padding: 8px 14px;
+    background: white; border: 1px solid var(--border);
+    border-radius: 999px; font-size: 13px;
+    color: var(--ink-2); text-decoration: none;
+    transition: all 120ms;
+  }
+  .quick-jump a:hover {
+    border-color: var(--brand); color: var(--brand);
+  }
+
+  section.screen {
+    margin-top: 64px;
+    scroll-margin-top: 20px;
+  }
+  section.screen .screen-meta {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 6px; flex-wrap: wrap;
+  }
+  section.screen .screen-no {
+    width: 32px; height: 32px; border-radius: 999px;
+    background: var(--ink); color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+  }
+  section.screen h2 {
+    font-size: 22px; font-weight: 700; margin: 0; letter-spacing: -0.01em;
+  }
+  section.screen .decisions {
+    margin: 8px 0 18px 44px;
+    font-size: 12px; color: var(--ink-3);
+  }
+  section.screen .decisions code {
+    background: var(--brand-tint); color: var(--brand-deep);
+    padding: 2px 6px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+    margin: 0 4px;
+  }
+  section.screen .blurb {
+    margin: 0 0 18px 44px;
+    font-size: 14px; color: var(--ink-2); line-height: 1.55;
+    max-width: 800px;
+  }
+
+  /* Browser frame */
+  .browser {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    box-shadow: var(--shadow-elevated);
+  }
+  .browser .bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 14px; background: #f1f5f9;
+    border-bottom: 1px solid var(--border);
+  }
+  .browser .bar .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--ink-3); opacity: 0.3;
+  }
+  .browser .bar .dot.r { background: #ef4444; opacity: 0.9; }
+  .browser .bar .dot.y { background: #f59e0b; opacity: 0.9; }
+  .browser .bar .dot.g { background: #22c55e; opacity: 0.9; }
+  .browser .bar .url {
+    margin-left: 14px; font-size: 11px; color: var(--ink-3);
+    font-family: ui-monospace, monospace;
+  }
+
+  /* ═════════════════════════════════════════════════════════════
+     LOGIN screen — Round 2 (1D full-bleed, 4B footer link)
+  ═════════════════════════════════════════════════════════════ */
+  .login-stage {
+    background: linear-gradient(135deg, var(--brand-deep) 0%, #105950 100%);
+    min-height: 560px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px;
+    position: relative;
+  }
+  .login-stage::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 80% 20%, rgba(20, 184, 166, 0.18), transparent 50%),
+      radial-gradient(circle at 20% 90%, rgba(20, 184, 166, 0.10), transparent 50%);
+    pointer-events: none;
+  }
+  .login-card {
+    background: white; border-radius: 12px;
+    padding: 36px 32px 28px; width: 100%; max-width: 380px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.06), 0 32px 80px rgba(0,0,0,0.24);
+    position: relative; z-index: 1;
+  }
+  .login-card .logo {
+    display: flex; justify-content: center; margin-bottom: 28px;
+  }
+  .login-card .logo svg { height: 36px; }
+  .login-card .title {
+    font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
+    text-align: center; margin-bottom: 4px;
+  }
+  .login-card .sub {
+    font-size: 13px; color: var(--ink-3);
+    text-align: center; margin-bottom: 26px;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .field label {
+    font-size: 11px; font-weight: 600; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .field input {
+    height: 40px; padding: 0 12px;
+    border: 1px solid var(--border-strong); border-radius: 6px;
+    font-size: 14px; color: var(--ink);
+    background: white;
+  }
+  .field input:focus {
+    outline: none; border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-tint);
+  }
+  .login-card .btn-primary {
+    width: 100%; height: 42px;
+    background: var(--brand); color: white;
+    border: none; border-radius: 6px;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer; margin-top: 4px;
+  }
+  .login-card .btn-primary:hover { background: var(--brand-hover); }
+  .login-card .footer-link {
+    margin-top: 20px; padding-top: 16px;
+    border-top: 1px dashed var(--border);
+    text-align: center; font-size: 13px;
+    color: var(--brand); font-weight: 600;
+  }
+
+  /* ═════════════════════════════════════════════════════════════
+     APP SHELL — sidebar (3A) + header
+  ═════════════════════════════════════════════════════════════ */
+  .app-shell {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 700px;
+    background: var(--bg);
+  }
+  .sidebar {
+    background: var(--brand-deep);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 18px 14px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .sidebar .brand-mark {
+    padding: 6px 10px 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sidebar .brand-mark svg { height: 22px; }
+  .sidebar .brand-mark .label {
+    color: white; font-weight: 700; letter-spacing: 0.12em; font-size: 12px;
+  }
+  .sidebar .nav-section-label {
+    font-size: 10px; color: rgba(255,255,255,0.45);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 14px 10px 4px;
+    font-weight: 700;
+  }
+  .sidebar .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 6px;
+    font-size: 13px; color: rgba(255, 255, 255, 0.75);
+    cursor: pointer; user-select: none;
+  }
+  .sidebar .nav-item .ico {
+    width: 16px; height: 16px;
+    background: currentColor; opacity: 0.7;
+    border-radius: 3px; flex-shrink: 0;
+  }
+  .sidebar .nav-item:hover {
+    background: rgba(255, 255, 255, 0.08); color: white;
+  }
+  .sidebar .nav-item.active {
+    background: rgba(255, 255, 255, 0.14); color: white;
+    font-weight: 600;
+  }
+  .sidebar .nav-item.active .ico { opacity: 1; }
+  .sidebar .user-row {
+    margin-top: auto;
+    padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 10px 4px;
+  }
+  .sidebar .user-row .avatar {
+    width: 32px; height: 32px;
+    box-shadow: 0 0 0 2px var(--brand-deep), 0 0 0 4px var(--brand);
+    font-size: 11px;
+  }
+  .sidebar .user-row .uname {
+    color: white; font-weight: 600; font-size: 12px;
+  }
+  .sidebar .user-row .urole {
+    color: rgba(255,255,255,0.55); font-size: 10px;
+  }
+
+  .main-col { display: flex; flex-direction: column; min-width: 0; }
+  .app-header {
+    background: white; border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .biz-switcher {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 10px 6px 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 120ms;
+  }
+  .biz-switcher:hover { background: var(--bg); }
+  .biz-switcher .biz-logo {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #0d9488, #14b8a6);
+    color: white; font-weight: 700; font-size: 13px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+  }
+  .biz-switcher .biz-meta { display: flex; flex-direction: column; }
+  .biz-switcher .biz-label {
+    font-size: 9px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+    line-height: 1.1;
+  }
+  .biz-switcher .biz-name { font-size: 13px; font-weight: 700; line-height: 1.2; }
+  .biz-switcher .chevron { color: var(--ink-3); font-size: 11px; margin-left: 4px; }
+
+  .app-header .search {
+    flex: 1; max-width: 380px; margin-left: 24px;
+    position: relative;
+  }
+  .app-header .search input {
+    width: 100%; height: 34px; padding: 0 12px 0 32px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; color: var(--ink);
+  }
+  .app-header .search input::placeholder { color: var(--ink-3); }
+  .app-header .search::before {
+    content: "⌕"; position: absolute;
+    left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--ink-3); font-size: 14px;
+  }
+  .app-header .right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .header-icon-btn {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--ink-2);
+    font-size: 16px; position: relative;
+    cursor: pointer;
+  }
+  .header-icon-btn:hover { background: var(--brand-tint); color: var(--brand); }
+  .header-icon-btn .badge-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px;
+    background: var(--danger); border: 1.5px solid white;
+    border-radius: 50%;
+  }
+  .density-toggle {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 999px; padding: 2px;
+    display: inline-flex; gap: 1px; font-size: 11px;
+  }
+  .density-toggle .seg {
+    padding: 4px 10px; border-radius: 999px; color: var(--ink-3); cursor: pointer;
+  }
+  .density-toggle .seg.active { background: var(--brand); color: white; font-weight: 600; }
+
+  .main-content {
+    flex: 1; padding: 28px;
+    overflow: hidden;
+  }
+  .greeting {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+    margin: 0 0 4px;
+  }
+  .greeting .wave { display: inline-block; transform: rotate(-15deg); }
+  .greeting-sub {
+    font-size: 13px; color: var(--ink-3); margin-bottom: 24px;
+  }
+
+  /* ═════════════════════════════════════════════════════════════
+     Card surface (2C hybrid)
+  ═════════════════════════════════════════════════════════════ */
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* KPI strip — 5 cells for admin/trainer (3+2 via 6-col), 4 for member */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .kpi-strip.member { grid-template-columns: repeat(4, 1fr); }
+  .kpi {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 4px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ""; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent, var(--brand));
+  }
+  .kpi.success { --accent: var(--brand); }
+  .kpi.people { --accent: #6366f1; }
+  .kpi.activity { --accent: #f59e0b; }
+  .kpi.retain { --accent: #14b8a6; }
+  .kpi.danger { --accent: var(--danger); }
+  .kpi.member { --accent: #ec4899; }
+  .kpi .lbl {
+    font-size: 11px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
+  }
+  .kpi .val {
+    font-size: 24px; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.1; color: var(--ink);
+  }
+  .kpi .trend {
+    font-size: 12px; color: var(--success); font-weight: 600;
+  }
+  .kpi .trend.warn { color: var(--danger); }
+  .kpi .trend.neutral { color: var(--ink-3); }
+
+  /* Two-column body: main chart + right rail */
+  .body-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+  }
+  .body-grid .left { display: flex; flex-direction: column; gap: 20px; }
+  .body-grid .right { display: flex; flex-direction: column; gap: 16px; }
+
+  .chart-card { padding: 18px; }
+  .chart-card .head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .chart-card .title { font-size: 15px; font-weight: 700; }
+  .chart-card .sub { font-size: 12px; color: var(--ink-3); }
+  .chart-card svg { width: 100%; height: 200px; display: block; }
+  .chart-card .toggle-row {
+    display: flex; gap: 4px; margin-top: 8px;
+  }
+  .chart-card .toggle-row .seg {
+    padding: 4px 10px; border-radius: 4px;
+    background: var(--bg); color: var(--ink-3);
+    font-size: 11px; font-weight: 600; cursor: pointer;
+  }
+  .chart-card .toggle-row .seg.active {
+    background: var(--brand); color: white;
+  }
+
+  /* Right-rail mixed (4D) — sections: Upcoming, Tasks, Alerts */
+  .rail-section { padding: 14px 16px; }
+  .rail-section h4 {
+    font-size: 11px; color: var(--ink-3); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin: 0 0 10px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .rail-section h4 .count {
+    background: var(--bg); color: var(--ink-2);
+    padding: 2px 7px; border-radius: 999px;
+    font-size: 10px; font-weight: 700;
+  }
+  .rail-section h4 .count.alert { background: #fee2e2; color: #991b1b; }
+  .rail-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0; font-size: 13px;
+  }
+  .rail-item + .rail-item { border-top: 1px solid var(--border); padding-top: 8px; margin-top: 0; }
+  .rail-item .av {
+    width: 28px; height: 28px; border-radius: 50%;
+    box-shadow: 0 0 0 1.5px white, 0 0 0 3px var(--brand);
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; overflow: hidden;
+  }
+  .rail-item .av.b { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+  .rail-item .av.c { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+  .rail-item .av.d { background: linear-gradient(135deg, #a3e635, #65a30d); }
+  .rail-item .av.task {
+    background: white; box-shadow: 0 0 0 1.5px var(--brand) inset;
+    color: var(--brand);
+  }
+  .rail-item .av.task.done { background: var(--brand); color: white; }
+  .rail-item .av.alert {
+    background: #fef2f2; box-shadow: 0 0 0 1.5px var(--danger) inset;
+    color: var(--danger); font-size: 14px;
+  }
+  .rail-item .label {
+    flex: 1; overflow: hidden;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .rail-item .label .name { font-weight: 600; color: var(--ink); line-height: 1.25; }
+  .rail-item .label .meta { font-size: 11px; color: var(--ink-3); line-height: 1.25; }
+  .rail-item .time {
+    font-size: 11px; color: var(--ink-3); font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Avatar (4A photo + colored ring) */
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #94a3b8, #475569);
+    color: white; font-weight: 700; font-size: 13px;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--brand);
+  }
+  .avatar.photo {
+    background:
+      radial-gradient(circle at 50% 32%, #fde68a 0 14%, transparent 15%),
+      radial-gradient(circle at 50% 80%, #fde68a 0 38%, transparent 40%),
+      linear-gradient(135deg, #94a3b8, #475569);
+  }
+  .avatar.orange { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+  .avatar.green { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+  .avatar.purple { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+  .avatar.pink { background: linear-gradient(135deg, #ec4899, #be185d); }
+
+  /* ═════════════════════════════════════════════════════════════
+     TRAINER 5A Start Session hero card
+  ═════════════════════════════════════════════════════════════ */
+  .start-hero {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 88px 1fr auto;
+    gap: 20px; align-items: center;
+  }
+  .start-hero .avatar { width: 88px; height: 88px; font-size: 26px; }
+  .start-hero .meta { display: flex; flex-direction: column; gap: 4px; }
+  .start-hero .eyebrow {
+    font-size: 11px; color: var(--brand);
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .start-hero .name {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .start-hero .session-meta {
+    font-size: 13px; color: var(--ink-2); margin-top: 2px;
+  }
+  .start-hero .session-meta .pill {
+    background: var(--brand-tint); color: var(--brand-deep);
+    padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 600;
+    margin-left: 4px;
+  }
+  .start-hero .actions {
+    display: flex; gap: 8px;
+  }
+  .btn-primary {
+    background: var(--brand); color: white;
+    padding: 10px 20px; border-radius: 6px;
+    font-size: 14px; font-weight: 700;
+    border: none; cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--brand-hover); }
+  .btn-ghost {
+    background: white; color: var(--ink-2);
+    padding: 10px 20px; border-radius: 6px;
+    font-size: 14px; font-weight: 500;
+    border: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .btn-ghost:hover { background: var(--bg); }
+
+  /* Today's roster list */
+  .roster-card .roster-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .roster-card .roster-header .title { font-size: 14px; font-weight: 700; }
+  .roster-card .roster-header .sub { font-size: 12px; color: var(--ink-3); }
+  .roster-row {
+    padding: 12px 18px;
+    display: grid;
+    grid-template-columns: 36px 1fr auto auto;
+    gap: 12px; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .roster-row:last-child { border-bottom: none; }
+  .roster-row.next { background: var(--brand-soft); }
+  .roster-row .meta .name { font-size: 13px; font-weight: 600; line-height: 1.3; }
+  .roster-row .meta .name .type {
+    color: var(--ink-3); font-weight: 400; font-size: 12px;
+  }
+  .roster-row .meta .when { font-size: 11px; color: var(--ink-3); }
+  .roster-row .when-col {
+    font-size: 13px; font-weight: 600;
+    text-align: right;
+  }
+  .roster-row .pill {
+    padding: 5px 14px; border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+    background: white; color: var(--ink-2); border: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .roster-row.next .pill {
+    background: var(--brand); color: white; border-color: var(--brand);
+  }
+
+  /* ═════════════════════════════════════════════════════════════
+     MEMBER PORTAL — next-class hero (6A)
+  ═════════════════════════════════════════════════════════════ */
+  .member-shell {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: 700px;
+    background: var(--bg);
+  }
+  .member-nav {
+    background: white; border-right: 1px solid var(--border);
+    padding: 18px 14px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .member-nav .brand-mark {
+    padding: 6px 10px 18px;
+  }
+  .member-nav .brand-mark svg { height: 22px; }
+  .member-nav .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 6px;
+    font-size: 13px; color: var(--ink-2);
+    cursor: pointer;
+  }
+  .member-nav .nav-item .ico {
+    width: 16px; height: 16px; background: currentColor;
+    opacity: 0.5; border-radius: 3px; flex-shrink: 0;
+  }
+  .member-nav .nav-item:hover { background: var(--bg); }
+  .member-nav .nav-item.active {
+    background: var(--brand-tint); color: var(--brand-deep);
+    font-weight: 600;
+  }
+  .member-nav .nav-item.active .ico { opacity: 1; }
+  .member-nav .user-row {
+    margin-top: auto;
+    padding-top: 14px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 10px 4px;
+  }
+  .member-nav .user-row .avatar {
+    width: 32px; height: 32px; font-size: 11px;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--brand);
+  }
+  .member-nav .user-row .uname { font-size: 12px; font-weight: 600; }
+  .member-nav .user-row .urole { font-size: 10px; color: var(--ink-3); }
+
+  .next-class-hero {
+    border-radius: 12px; overflow: hidden;
+    background: linear-gradient(135deg, var(--brand-deep) 0%, var(--brand) 100%);
+    color: white; padding: 28px 28px 32px;
+    position: relative; margin-bottom: 24px;
+  }
+  .next-class-hero::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 80% 20%, rgba(20, 184, 166, 0.25), transparent 50%),
+      radial-gradient(circle at 20% 90%, rgba(20, 184, 166, 0.15), transparent 50%);
+    pointer-events: none;
+  }
+  .next-class-hero > * { position: relative; z-index: 1; }
+  .next-class-hero .eyebrow {
+    font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.1em; opacity: 0.85; font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .next-class-hero h2 {
+    font-size: 26px; font-weight: 700; letter-spacing: -0.01em;
+    margin: 0 0 4px;
+  }
+  .next-class-hero .meta { font-size: 14px; opacity: 0.9; }
+  .next-class-hero .countdown {
+    margin-top: 16px; display: inline-flex;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px; padding: 10px 16px;
+    font-size: 14px; font-weight: 600;
+  }
+  .next-class-hero .actions {
+    margin-top: 20px; display: flex; gap: 10px;
+  }
+  .next-class-hero .btn {
+    padding: 10px 18px; border-radius: 6px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    border: none;
+  }
+  .next-class-hero .btn.primary { background: white; color: var(--brand-deep); }
+  .next-class-hero .btn.ghost { background: rgba(255,255,255,0.2); color: white; }
+
+  /* ═════════════════════════════════════════════════════════════
+     SKELETON LOADING (2C) + EMPTY STATE (6C)
+  ═════════════════════════════════════════════════════════════ */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+  .skel { animation: pulse 1.6s ease-in-out infinite; background: #f1f5f9; border-radius: 4px; }
+  .skel-kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+    display: flex; flex-direction: column; gap: 8px; min-height: 86px;
+  }
+  .skel-kpi .lbl-skel { height: 8px; width: 60px; }
+  .skel-kpi .val-skel { height: 22px; width: 80px; }
+  .skel-kpi .trend-skel { height: 10px; width: 50px; }
+  .skel-chart {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius); height: 240px;
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .skel-chart .head-skel { height: 14px; width: 160px; }
+  .skel-chart .body-skel { flex: 1; }
+  .skel-rail-item { padding: 10px 0; display: flex; gap: 10px; align-items: center; }
+  .skel-rail-item .av-skel { width: 28px; height: 28px; border-radius: 50%; }
+  .skel-rail-item .lbl-skel { height: 10px; flex: 1; }
+
+  /* Empty state (minimal zeros) */
+  .empty-kpi {
+    background: var(--bg);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .empty-kpi .left { display: flex; flex-direction: column; gap: 2px; }
+  .empty-kpi .lbl {
+    font-size: 11px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
+  }
+  .empty-kpi .val { font-size: 22px; font-weight: 700; color: var(--ink-3); }
+  .empty-kpi .hint {
+    font-size: 12px; color: var(--brand); font-weight: 600; cursor: pointer;
+  }
+  .empty-kpi .hint:hover { text-decoration: underline; }
+
+  /* Footer */
+  footer {
+    margin-top: 96px; padding-top: 32px;
+    border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--ink-3);
+    display: flex; justify-content: space-between; gap: 16px;
+    flex-wrap: wrap;
+  }
+  footer a { color: var(--brand-deep); text-decoration: none; border-bottom: 1px dotted var(--brand-deep); }
+  footer a:hover { color: var(--brand); border-color: var(--brand); }
+
+  /* Responsive */
+  @media (max-width: 1000px) {
+    .body-grid { grid-template-columns: 1fr; }
+    .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+    .kpi-strip.member { grid-template-columns: repeat(2, 1fr); }
+    .app-shell { grid-template-columns: 60px 1fr; }
+    .sidebar .nav-item span:not(.ico) { display: none; }
+    .sidebar .brand-mark .label,
+    .sidebar .nav-section-label,
+    .sidebar .user-row .uname,
+    .sidebar .user-row .urole { display: none; }
+    .member-shell { grid-template-columns: 60px 1fr; }
+    .member-nav .nav-item span:not(.ico) { display: none; }
+  }
+  @media (max-width: 700px) {
+    .page { padding: 32px 16px 64px; }
+    h1 { font-size: 26px; }
+    .kpi-strip, .kpi-strip.member { grid-template-columns: repeat(2, 1fr); }
+    .start-hero { grid-template-columns: 64px 1fr; }
+    .start-hero .avatar { width: 64px; height: 64px; font-size: 22px; }
+    .start-hero .actions { grid-column: span 2; margin-top: 12px; }
+    .quick-jump { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="brand">
+    <svg viewBox="0 0 220 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g transform="translate(4,4)">
+        <polygon points="20,0 38,11 38,29 20,40 2,29 2,11" fill="#0d9488"/>
+        <path d="M12 20 L18 14 L24 26 L28 20" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      </g>
+      <text x="50" y="32" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="900" font-size="22" letter-spacing="0.5" fill="#0E3F3B">FITQUAKE</text>
+    </svg>
+    <span class="name">PRODUCT MOCKS<span class="sub">· locked design</span></span>
+  </header>
+  <div class="breadcrumb"><a href="./">← Back to decision rounds</a> · <a href="results.html">View results →</a></div>
+
+  <h1>What the product looks like with all decisions applied</h1>
+  <p class="lede">
+    This page renders the five most important screens of Fitquake using the locked design decisions
+    from Rounds 1-4. It's a visual reference for what we'll be building in Phase 7 — not interactive,
+    but pixel-faithful to the chosen palette, components, layouts, and persona patterns.
+  </p>
+
+  <div class="quick-jump">
+    <a href="#login">1 · Login</a>
+    <a href="#admin">2 · Gym admin dashboard</a>
+    <a href="#trainer">3 · Trainer workspace</a>
+    <a href="#member">4 · Member portal</a>
+    <a href="#states">5 · Loading + empty states</a>
+  </div>
+
+  <!-- ═══════════ 1. LOGIN ═══════════ -->
+  <section class="screen" id="login">
+    <div class="screen-meta">
+      <span class="screen-no">1</span>
+      <h2>Login</h2>
+    </div>
+    <div class="decisions">
+      Decisions visible: <code>R1 1A palette + 1D logo</code> <code>R2 1D full-bleed</code> <code>R2 4B footer link</code>
+    </div>
+    <p class="blurb">
+      Full-bleed teal-deep brand background, white card centered. Logo above the form. "Trouble signing in?
+      Reset password" link below the primary action covers password + locked-account + email-issue cases in
+      one place.
+    </p>
+    <div class="browser">
+      <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">app.fitquake.com/login</span></div>
+      <div class="login-stage">
+        <div class="login-card">
+          <div class="logo">
+            <svg viewBox="0 0 220 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <g transform="translate(4,4)">
+                <polygon points="20,0 38,11 38,29 20,40 2,29 2,11" fill="#0d9488"/>
+                <path d="M12 20 L18 14 L24 26 L28 20" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+              </g>
+              <text x="50" y="32" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="900" font-size="22" letter-spacing="0.5" fill="#0E3F3B">FITQUAKE</text>
+            </svg>
+          </div>
+          <div class="title">Sign in</div>
+          <div class="sub">Welcome back. Use your username and password.</div>
+          <div class="field">
+            <label>USERNAME</label>
+            <input type="text" placeholder="becky.thomas" />
+          </div>
+          <div class="field">
+            <label>PASSWORD</label>
+            <input type="password" placeholder="••••••••••••" />
+          </div>
+          <button class="btn-primary">Sign in</button>
+          <div class="footer-link">Trouble signing in? Reset password</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 2. GYM ADMIN DASHBOARD ═══════════ -->
+  <section class="screen" id="admin">
+    <div class="screen-meta">
+      <span class="screen-no">2</span>
+      <h2>Gym admin dashboard</h2>
+    </div>
+    <div class="decisions">
+      Decisions visible: <code>R1 1A+1D · 2C cards · 3A sidebar · 4A avatars</code> <code>R2 5B switcher</code> <code>R3 2A revenue chart · 3B+4D side rail · 5C density</code> <code>R4 1A Growth KPIs</code>
+    </div>
+    <p class="blurb">
+      Becky logs in and lands here. Dark teal sidebar (Round 1), business switcher with logo (Round 2 + Phase 7j),
+      Growth-pack KPIs (Round 4: Net growth, Churn, MRR, Visits/member, Rev/member), revenue trend chart anchoring
+      the main column, mixed right-rail (Upcoming + Tasks + Alerts). Density toggle in header lets her swap to
+      Compact when she wants.
+    </p>
+    <div class="browser">
+      <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">app.fitquake.com/admin/dashboard</span></div>
+      <div class="app-shell">
+
+        <aside class="sidebar">
+          <div class="brand-mark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <polygon points="20,0 38,11 38,29 20,40 2,29 2,11" fill="#14b8a6"/>
+              <path d="M12 20 L18 14 L24 26 L28 20" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+            <span class="label">FITQUAKE</span>
+          </div>
+          <div class="nav-item active"><span class="ico"></span><span>Dashboard</span></div>
+          <div class="nav-section-label">People</div>
+          <div class="nav-item"><span class="ico"></span><span>Members</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Coaches</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Leads &amp; Sales</span></div>
+          <div class="nav-section-label">Operations</div>
+          <div class="nav-item"><span class="ico"></span><span>Calendar</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Programs</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Billing</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Tasks</span></div>
+          <div class="nav-section-label">Reports</div>
+          <div class="nav-item"><span class="ico"></span><span>Sales</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Staff</span></div>
+          <div class="user-row">
+            <span class="avatar orange">BT</span>
+            <div>
+              <div class="uname">Becky Thomas</div>
+              <div class="urole">Owner · Admin</div>
+            </div>
+          </div>
+        </aside>
+
+        <div class="main-col">
+          <header class="app-header">
+            <div class="biz-switcher">
+              <span class="biz-logo">A</span>
+              <div class="biz-meta">
+                <span class="biz-label">CURRENT BUSINESS</span>
+                <span class="biz-name">Anytime Fitness · Downtown</span>
+              </div>
+              <span class="chevron">▾</span>
+            </div>
+            <div class="search">
+              <input type="search" placeholder="Search members, classes, transactions…" />
+            </div>
+            <div class="right">
+              <div class="density-toggle">
+                <span class="seg">Compact</span>
+                <span class="seg active">Comfortable</span>
+                <span class="seg">Spacious</span>
+              </div>
+              <div class="header-icon-btn">🔔<span class="badge-dot"></span></div>
+              <span class="avatar orange">BT</span>
+            </div>
+          </header>
+
+          <div class="main-content">
+            <h1 class="greeting">Welcome back, Becky <span class="wave">👋</span></h1>
+            <div class="greeting-sub">Here's how Anytime Fitness · Downtown is doing this month.</div>
+
+            <div class="kpi-strip">
+              <div class="kpi success">
+                <div class="lbl">Net Growth</div>
+                <div class="val">+12</div>
+                <div class="trend">↑ vs +8 last mo</div>
+              </div>
+              <div class="kpi success">
+                <div class="lbl">Churn</div>
+                <div class="val">3.2%</div>
+                <div class="trend">↓ 0.4pt</div>
+              </div>
+              <div class="kpi success">
+                <div class="lbl">MRR</div>
+                <div class="val">$126K</div>
+                <div class="trend">↑ 4.2%</div>
+              </div>
+              <div class="kpi success">
+                <div class="lbl">Visits / Member</div>
+                <div class="val">8.4</div>
+                <div class="trend">↑ 0.6</div>
+              </div>
+              <div class="kpi success">
+                <div class="lbl">Revenue / Member</div>
+                <div class="val">$98</div>
+                <div class="trend">↑ $4</div>
+              </div>
+            </div>
+
+            <div class="body-grid">
+              <div class="left">
+                <div class="card chart-card">
+                  <div class="head">
+                    <span class="title">Revenue Overview</span>
+                    <span class="sub">$126,430 · ↑ 4.2% MoM</span>
+                  </div>
+                  <svg viewBox="0 0 600 200" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="grev" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.34"/>
+                        <stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <g stroke="#e2e8f0" stroke-width="1">
+                      <line x1="0" y1="40" x2="600" y2="40"/>
+                      <line x1="0" y1="90" x2="600" y2="90"/>
+                      <line x1="0" y1="140" x2="600" y2="140"/>
+                      <line x1="0" y1="190" x2="600" y2="190"/>
+                    </g>
+                    <path d="M 0 160 L 50 150 L 100 142 L 150 128 L 200 132 L 250 110 L 300 100 L 350 88 L 400 80 L 450 68 L 500 56 L 550 48 L 600 40 L 600 200 L 0 200 Z" fill="url(#grev)"/>
+                    <path d="M 0 160 L 50 150 L 100 142 L 150 128 L 200 132 L 250 110 L 300 100 L 350 88 L 400 80 L 450 68 L 500 56 L 550 48 L 600 40" fill="none" stroke="#0d9488" stroke-width="2.5"/>
+                    <circle cx="600" cy="40" r="4" fill="#0d9488"/>
+                    <circle cx="600" cy="40" r="8" fill="#0d9488" opacity="0.18"/>
+                  </svg>
+                  <div class="toggle-row">
+                    <span class="seg">7d</span>
+                    <span class="seg active">30d</span>
+                    <span class="seg">90d</span>
+                    <span class="seg">YTD</span>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="right">
+                <div class="card">
+                  <div class="rail-section">
+                    <h4>UPCOMING <span class="count">6</span></h4>
+                    <div class="rail-item">
+                      <span class="av b">YG</span>
+                      <span class="label"><span class="name">Yoga · Studio B</span><span class="meta">Coach: Sara</span></span>
+                      <span class="time">9:30</span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av">AS</span>
+                      <span class="label"><span class="name">PT · Amy Smith</span><span class="meta">Coach: Ian</span></span>
+                      <span class="time">9:30</span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av c">JM</span>
+                      <span class="label"><span class="name">Spin · Cycle Room</span><span class="meta">Coach: Kai</span></span>
+                      <span class="time">10:00</span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av d">RB</span>
+                      <span class="label"><span class="name">HIIT · Main Studio</span><span class="meta">Coach: Mike</span></span>
+                      <span class="time">11:30</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="rail-section">
+                    <h4>TASKS <span class="count">5</span></h4>
+                    <div class="rail-item">
+                      <span class="av task done"></span>
+                      <span class="label"><span class="name">Order new towels</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av task"></span>
+                      <span class="label"><span class="name">Renew liability insurance</span><span class="meta">Due May 28</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av task"></span>
+                      <span class="label"><span class="name">Reply to Amy re: package change</span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="rail-section">
+                    <h4>ALERTS <span class="count alert">3</span></h4>
+                    <div class="rail-item">
+                      <span class="av alert">!</span>
+                      <span class="label"><span class="name">2 payments failed</span><span class="meta">Auto-retry tomorrow</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av alert">!</span>
+                      <span class="label"><span class="name">5 trials ending this week</span></span>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 3. TRAINER WORKSPACE ═══════════ -->
+  <section class="screen" id="trainer">
+    <div class="screen-meta">
+      <span class="screen-no">3</span>
+      <h2>Trainer workspace</h2>
+    </div>
+    <div class="decisions">
+      Decisions visible: <code>R1 5A Start Session hero</code> <code>R4 2C Today KPIs</code> <code>R3 3B+4D side rail</code>
+    </div>
+    <p class="blurb">
+      Ian's view. Same shell, but trainer-specific nav and the 2C Today KPI pack (Sessions today, Next session,
+      Earnings today, Follow-ups, Earnings MTD). The 5A Start Session hero card centers on his next client at
+      the top of the page — one click to start, one click to see her profile. Below: today's roster with the next
+      session highlighted.
+    </p>
+    <div class="browser">
+      <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">app.fitquake.com/trainer/home</span></div>
+      <div class="app-shell">
+
+        <aside class="sidebar">
+          <div class="brand-mark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <polygon points="20,0 38,11 38,29 20,40 2,29 2,11" fill="#14b8a6"/>
+              <path d="M12 20 L18 14 L24 26 L28 20" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+            <span class="label">FITQUAKE</span>
+          </div>
+          <div class="nav-item active"><span class="ico"></span><span>My Day</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Clients</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Sessions</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Calendar</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Programs</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Packages</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Messages</span></div>
+          <div class="nav-section-label">Personal</div>
+          <div class="nav-item"><span class="ico"></span><span>Earnings</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Settings</span></div>
+          <div class="user-row">
+            <span class="avatar green">IW</span>
+            <div>
+              <div class="uname">Ian Wright</div>
+              <div class="urole">Strength · Trainer</div>
+            </div>
+          </div>
+        </aside>
+
+        <div class="main-col">
+          <header class="app-header">
+            <div class="biz-switcher">
+              <span class="biz-logo">A</span>
+              <div class="biz-meta">
+                <span class="biz-label">CURRENT BUSINESS</span>
+                <span class="biz-name">Anytime Fitness · Downtown</span>
+              </div>
+              <span class="chevron">▾</span>
+            </div>
+            <div class="search">
+              <input type="search" placeholder="Search clients, sessions…" />
+            </div>
+            <div class="right">
+              <div class="header-icon-btn">🔔<span class="badge-dot"></span></div>
+              <span class="avatar green">IW</span>
+            </div>
+          </header>
+
+          <div class="main-content">
+            <h1 class="greeting">Good morning, Ian <span class="wave">👋</span></h1>
+            <div class="greeting-sub">You have 6 sessions today. Next one starts in 14 minutes.</div>
+
+            <div class="kpi-strip">
+              <div class="kpi activity">
+                <div class="lbl">Sessions Today</div>
+                <div class="val">6</div>
+                <div class="trend neutral">2 done · 4 to go</div>
+              </div>
+              <div class="kpi activity">
+                <div class="lbl">Next Session</div>
+                <div class="val">9:30</div>
+                <div class="trend neutral">Amy · Strength</div>
+              </div>
+              <div class="kpi success">
+                <div class="lbl">Earnings Today</div>
+                <div class="val">$720</div>
+                <div class="trend">$240 collected</div>
+              </div>
+              <div class="kpi danger">
+                <div class="lbl">Follow-ups</div>
+                <div class="val">3</div>
+                <div class="trend warn">2 overdue</div>
+              </div>
+              <div class="kpi success">
+                <div class="lbl">Earnings MTD</div>
+                <div class="val">$3,840</div>
+                <div class="trend">on track</div>
+              </div>
+            </div>
+
+            <div class="body-grid">
+              <div class="left">
+                <div class="card start-hero">
+                  <span class="avatar orange">AS</span>
+                  <div>
+                    <div class="meta">
+                      <span class="eyebrow">Next Session · 9:30 AM · in 14 min</span>
+                      <span class="name">Amy Smith</span>
+                      <span class="session-meta">Strength training <span class="pill">Pkg: 10 · 4 remaining</span></span>
+                    </div>
+                  </div>
+                  <div class="actions">
+                    <button class="btn-primary">Start Session</button>
+                    <button class="btn-ghost">View profile</button>
+                  </div>
+                </div>
+
+                <div class="card roster-card">
+                  <div class="roster-header">
+                    <span class="title">Today's roster</span>
+                    <span class="sub">6 sessions · 2 done</span>
+                  </div>
+                  <div class="roster-row">
+                    <span class="avatar pink" style="opacity: 0.45;">SM</span>
+                    <div class="meta">
+                      <div class="name">Sara Martinez <span class="type">· Mobility (done)</span></div>
+                      <div class="when">8:00 AM · 1 of 8</div>
+                    </div>
+                    <div class="when-col">8:00</div>
+                    <span class="pill">✓ Done</span>
+                  </div>
+                  <div class="roster-row next">
+                    <span class="avatar orange">AS</span>
+                    <div class="meta">
+                      <div class="name">Amy Smith <span class="type">· Strength</span></div>
+                      <div class="when">9:30 AM · 4 of 10</div>
+                    </div>
+                    <div class="when-col">9:30</div>
+                    <span class="pill">Start</span>
+                  </div>
+                  <div class="roster-row">
+                    <span class="avatar purple">JM</span>
+                    <div class="meta">
+                      <div class="name">Jordan Miller <span class="type">· Mobility</span></div>
+                      <div class="when">10:30 AM · drop-in</div>
+                    </div>
+                    <div class="when-col">10:30</div>
+                    <span class="pill">Start</span>
+                  </div>
+                  <div class="roster-row">
+                    <span class="avatar green">RB</span>
+                    <div class="meta">
+                      <div class="name">Rachel Brown <span class="type">· Strength</span></div>
+                      <div class="when">11:30 AM · 7 of 10</div>
+                    </div>
+                    <div class="when-col">11:30</div>
+                    <span class="pill">Start</span>
+                  </div>
+                  <div class="roster-row">
+                    <span class="avatar orange">TC</span>
+                    <div class="meta">
+                      <div class="name">Tomás Costa <span class="type">· Mobility</span></div>
+                      <div class="when">1:00 PM · 5 of 12</div>
+                    </div>
+                    <div class="when-col">1:00</div>
+                    <span class="pill">Start</span>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="right">
+                <div class="card">
+                  <div class="rail-section">
+                    <h4>FOLLOW-UPS <span class="count alert">3</span></h4>
+                    <div class="rail-item">
+                      <span class="av alert">!</span>
+                      <span class="label"><span class="name">Reply to Sara re: rescheduling</span><span class="meta">2 days overdue</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av alert">!</span>
+                      <span class="label"><span class="name">Send program update to Amy</span><span class="meta">1 day overdue</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av task"></span>
+                      <span class="label"><span class="name">Confirm next month with Jordan</span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="rail-section">
+                    <h4>WEEK AHEAD</h4>
+                    <div class="rail-item">
+                      <span class="label"><span class="name">Mon — 6 sessions</span><span class="meta">$720</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="label"><span class="name">Tue — 5 sessions</span><span class="meta">$600</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="label"><span class="name">Wed — 7 sessions</span><span class="meta">$840</span></span>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 4. MEMBER PORTAL ═══════════ -->
+  <section class="screen" id="member">
+    <div class="screen-meta">
+      <span class="screen-no">4</span>
+      <h2>Member portal home</h2>
+    </div>
+    <div class="decisions">
+      Decisions visible: <code>R1 6A next-class hero</code> <code>R4 3A Activity KPIs</code> <code>lighter shell (no business switcher; just the member's portal)</code>
+    </div>
+    <p class="blurb">
+      What a gym member sees when they sign in to their portal. The next-class hero with countdown + RSVP
+      pulls focus; below it, the 3A Activity KPI strip (Next class · Visits this mo · PT remaining · Goal).
+      No business switcher — members belong to a single gym at a time, and the shell stays lighter than the
+      admin one.
+    </p>
+    <div class="browser">
+      <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">my.fitquake.com/home</span></div>
+      <div class="member-shell">
+        <aside class="member-nav">
+          <div class="brand-mark">
+            <svg viewBox="0 0 220 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <g transform="translate(4,4)">
+                <polygon points="20,0 38,11 38,29 20,40 2,29 2,11" fill="#0d9488"/>
+                <path d="M12 20 L18 14 L24 26 L28 20" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+              </g>
+              <text x="50" y="32" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="900" font-size="18" letter-spacing="0.5" fill="#0E3F3B">FITQUAKE</text>
+            </svg>
+          </div>
+          <div class="nav-item active"><span class="ico"></span><span>Home</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Book a class</span></div>
+          <div class="nav-item"><span class="ico"></span><span>My schedule</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Membership</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Personal training</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Billing</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Profile</span></div>
+          <div class="user-row">
+            <span class="avatar pink">SC</span>
+            <div>
+              <div class="uname">Sara Chen</div>
+              <div class="urole">Gold member</div>
+            </div>
+          </div>
+        </aside>
+
+        <div class="main-col">
+          <div class="main-content">
+            <div class="next-class-hero">
+              <div class="eyebrow">Your next class</div>
+              <h2>Strength &amp; Conditioning</h2>
+              <div class="meta">with Ian Wright · Main Studio</div>
+              <div class="countdown">Starts in 2h 14m · Tomorrow 9:30 AM</div>
+              <div class="actions">
+                <button class="btn primary">I'm coming</button>
+                <button class="btn ghost">Reschedule</button>
+              </div>
+            </div>
+
+            <div class="kpi-strip member">
+              <div class="kpi member">
+                <div class="lbl">Next Class</div>
+                <div class="val">Tomorrow</div>
+                <div class="trend neutral">9:30 · Studio B</div>
+              </div>
+              <div class="kpi member">
+                <div class="lbl">Visits This Mo</div>
+                <div class="val">12</div>
+                <div class="trend">on pace for 18</div>
+              </div>
+              <div class="kpi member">
+                <div class="lbl">PT Remaining</div>
+                <div class="val">4 / 10</div>
+                <div class="trend neutral">refresh May 28</div>
+              </div>
+              <div class="kpi member">
+                <div class="lbl">Monthly Goal</div>
+                <div class="val">64%</div>
+                <div class="trend">on track</div>
+              </div>
+            </div>
+
+            <div class="body-grid">
+              <div class="left">
+                <div class="card">
+                  <div class="rail-section">
+                    <h4>YOUR UPCOMING CLASSES</h4>
+                    <div class="rail-item">
+                      <span class="av b">SC</span>
+                      <span class="label"><span class="name">Strength &amp; Conditioning</span><span class="meta">Tomorrow · 9:30 · Ian Wright</span></span>
+                      <span class="time">Going</span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av c">YG</span>
+                      <span class="label"><span class="name">Vinyasa Yoga</span><span class="meta">Thu · 7:00 · Sara Martinez</span></span>
+                      <span class="time">RSVP</span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av d">CY</span>
+                      <span class="label"><span class="name">Cycle 45</span><span class="meta">Sat · 10:00 · Kai Roberts</span></span>
+                      <span class="time">RSVP</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <aside class="right">
+                <div class="card">
+                  <div class="rail-section">
+                    <h4>QUICK ACTIONS</h4>
+                    <div class="rail-item">
+                      <span class="label"><span class="name">Book a class</span><span class="meta">42 available this week</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="label"><span class="name">Schedule PT session</span><span class="meta">Ian, Sara, Kai available</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="label"><span class="name">Update payment method</span><span class="meta">Visa ending 4242</span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="rail-section">
+                    <h4>ACCOUNT</h4>
+                    <div class="rail-item">
+                      <span class="label"><span class="name">Gold membership</span><span class="meta">Renews May 28 · $89</span></span>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 5. LOADING + EMPTY STATES ═══════════ -->
+  <section class="screen" id="states">
+    <div class="screen-meta">
+      <span class="screen-no">5</span>
+      <h2>Loading &amp; empty states</h2>
+    </div>
+    <div class="decisions">
+      Decisions visible: <code>R2 2C skeleton loading</code> <code>R3 6C minimal zeros empty state</code>
+    </div>
+    <p class="blurb">
+      Two boundary cases. <strong>Top:</strong> what shows during the moment between "page loaded" and "session
+      resolved + data fetched" — the skeleton dashboard (Round 2 2C). <strong>Bottom:</strong> what a brand-new
+      gym sees before any members, classes, or transactions exist — minimal zeros with inline action hints
+      (Round 3 6C). Both honest, both fast-feeling, both lead to action.
+    </p>
+
+    <!-- Skeleton -->
+    <div class="browser" style="margin-bottom: 32px;">
+      <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">app.fitquake.com/admin/dashboard · loading</span></div>
+      <div class="app-shell">
+        <aside class="sidebar">
+          <div class="brand-mark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <polygon points="20,0 38,11 38,29 20,40 2,29 2,11" fill="#14b8a6"/>
+              <path d="M12 20 L18 14 L24 26 L28 20" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+            <span class="label">FITQUAKE</span>
+          </div>
+          <div class="nav-item active"><span class="ico"></span><span>Dashboard</span></div>
+          <div class="nav-item"><span class="ico"></span><span>People</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Calendar</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Billing</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Reports</span></div>
+        </aside>
+        <div class="main-col">
+          <header class="app-header" style="padding: 12px 24px;">
+            <div class="biz-switcher" style="opacity: 0.5;">
+              <span class="biz-logo skel" style="background: #e2e8f0;"></span>
+              <div class="biz-meta">
+                <span class="biz-label">CURRENT BUSINESS</span>
+                <span class="biz-name skel" style="display: inline-block; width: 130px; height: 14px;"></span>
+              </div>
+            </div>
+            <div class="search">
+              <div class="skel" style="height: 34px; border-radius: 8px;"></div>
+            </div>
+            <div class="right">
+              <div class="skel" style="width: 34px; height: 34px; border-radius: 8px;"></div>
+              <div class="skel" style="width: 36px; height: 36px; border-radius: 50%;"></div>
+            </div>
+          </header>
+          <div class="main-content">
+            <div class="skel" style="height: 28px; width: 280px; margin-bottom: 4px;"></div>
+            <div class="skel" style="height: 14px; width: 380px; margin-bottom: 24px;"></div>
+            <div class="kpi-strip">
+              <div class="skel-kpi">
+                <div class="skel lbl-skel"></div>
+                <div class="skel val-skel"></div>
+                <div class="skel trend-skel"></div>
+              </div>
+              <div class="skel-kpi">
+                <div class="skel lbl-skel"></div>
+                <div class="skel val-skel"></div>
+                <div class="skel trend-skel"></div>
+              </div>
+              <div class="skel-kpi">
+                <div class="skel lbl-skel"></div>
+                <div class="skel val-skel"></div>
+                <div class="skel trend-skel"></div>
+              </div>
+              <div class="skel-kpi">
+                <div class="skel lbl-skel"></div>
+                <div class="skel val-skel"></div>
+                <div class="skel trend-skel"></div>
+              </div>
+              <div class="skel-kpi">
+                <div class="skel lbl-skel"></div>
+                <div class="skel val-skel"></div>
+                <div class="skel trend-skel"></div>
+              </div>
+            </div>
+            <div class="body-grid">
+              <div class="left">
+                <div class="skel-chart">
+                  <div class="skel head-skel"></div>
+                  <div class="skel body-skel"></div>
+                </div>
+              </div>
+              <aside class="right">
+                <div class="card">
+                  <div class="rail-section">
+                    <div class="skel" style="height: 12px; width: 80px; margin-bottom: 10px;"></div>
+                    <div class="skel-rail-item">
+                      <div class="skel av-skel"></div>
+                      <div class="skel lbl-skel"></div>
+                    </div>
+                    <div class="skel-rail-item">
+                      <div class="skel av-skel"></div>
+                      <div class="skel lbl-skel"></div>
+                    </div>
+                    <div class="skel-rail-item">
+                      <div class="skel av-skel"></div>
+                      <div class="skel lbl-skel"></div>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="browser">
+      <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">app.fitquake.com/admin/dashboard · first-day</span></div>
+      <div class="app-shell">
+        <aside class="sidebar">
+          <div class="brand-mark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <polygon points="20,0 38,11 38,29 20,40 2,29 2,11" fill="#14b8a6"/>
+              <path d="M12 20 L18 14 L24 26 L28 20" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+            <span class="label">FITQUAKE</span>
+          </div>
+          <div class="nav-item active"><span class="ico"></span><span>Dashboard</span></div>
+          <div class="nav-item"><span class="ico"></span><span>People</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Calendar</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Billing</span></div>
+          <div class="nav-item"><span class="ico"></span><span>Reports</span></div>
+          <div class="user-row">
+            <span class="avatar pink">PW</span>
+            <div>
+              <div class="uname">Phil White</div>
+              <div class="urole">Owner</div>
+            </div>
+          </div>
+        </aside>
+        <div class="main-col">
+          <header class="app-header">
+            <div class="biz-switcher">
+              <span class="biz-logo">P</span>
+              <div class="biz-meta">
+                <span class="biz-label">CURRENT BUSINESS</span>
+                <span class="biz-name">Pacific Strength Co.</span>
+              </div>
+              <span class="chevron">▾</span>
+            </div>
+            <div class="search">
+              <input type="search" placeholder="Search…" />
+            </div>
+            <div class="right">
+              <div class="header-icon-btn">🔔</div>
+              <span class="avatar pink">PW</span>
+            </div>
+          </header>
+          <div class="main-content">
+            <h1 class="greeting">Welcome to Fitquake, Phil <span class="wave">👋</span></h1>
+            <div class="greeting-sub">Let's get your gym set up. Each card below leads to a quick action.</div>
+
+            <div class="kpi-strip">
+              <div class="empty-kpi">
+                <div class="left">
+                  <div class="lbl">Members</div>
+                  <div class="val">0</div>
+                </div>
+                <span class="hint">+ Add member</span>
+              </div>
+              <div class="empty-kpi">
+                <div class="left">
+                  <div class="lbl">MRR</div>
+                  <div class="val">$0</div>
+                </div>
+                <span class="hint">+ Add membership tier</span>
+              </div>
+              <div class="empty-kpi">
+                <div class="left">
+                  <div class="lbl">Sessions Today</div>
+                  <div class="val">0</div>
+                </div>
+                <span class="hint">+ Schedule one</span>
+              </div>
+              <div class="empty-kpi">
+                <div class="left">
+                  <div class="lbl">Coaches</div>
+                  <div class="val">0</div>
+                </div>
+                <span class="hint">+ Add coach</span>
+              </div>
+              <div class="empty-kpi">
+                <div class="left">
+                  <div class="lbl">Programs</div>
+                  <div class="val">0</div>
+                </div>
+                <span class="hint">+ Create program</span>
+              </div>
+            </div>
+
+            <div class="body-grid">
+              <div class="left">
+                <div class="card" style="padding: 24px; text-align: center;">
+                  <div style="font-size: 36px; margin-bottom: 8px;">📈</div>
+                  <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Your revenue chart will appear here</div>
+                  <div style="font-size: 13px; color: var(--ink-3); margin-bottom: 16px;">Once you've recorded transactions, you'll see trends over time.</div>
+                  <button class="btn-primary">Set up payment processing</button>
+                </div>
+              </div>
+              <aside class="right">
+                <div class="card">
+                  <div class="rail-section">
+                    <h4>GET STARTED</h4>
+                    <div class="rail-item">
+                      <span class="av task done"></span>
+                      <span class="label"><span class="name">Create your account</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av task"></span>
+                      <span class="label"><span class="name">Add your first member</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av task"></span>
+                      <span class="label"><span class="name">Configure membership tiers</span></span>
+                    </div>
+                    <div class="rail-item">
+                      <span class="av task"></span>
+                      <span class="label"><span class="name">Connect Stripe</span></span>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Fitquake · Locked Design (Rounds 1-4) · 2026-05-17</span>
+    <span><a href="./">All decisions</a> · <a href="results.html">Results</a> · <a href="https://github.com/whitepa/fitquake-mocks" target="_blank" rel="noopener">Repo</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

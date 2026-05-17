@@ -203,9 +203,17 @@
   }
   footer a:hover { color: var(--brand); border-color: var(--brand); }
 
+  .cta-row {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    margin: 32px 0 40px;
+  }
+  @media (max-width: 700px) {
+    .cta-row { grid-template-columns: 1fr; }
+  }
   .results-cta {
     display: block;
-    margin: 32px 0 40px;
     padding: 18px 22px;
     background: var(--brand-tint);
     border: 2px solid var(--brand);
@@ -219,6 +227,18 @@
   .results-cta:hover {
     background: #99f6e4;
     transform: translateY(-1px);
+  }
+  .results-cta.mocks-cta {
+    background: #0E3F3B;
+    color: white;
+    border-color: #0E3F3B;
+  }
+  .results-cta.mocks-cta:hover {
+    background: #0d9488;
+    border-color: #0d9488;
+  }
+  .results-cta.mocks-cta .results-cta-sub {
+    color: rgba(255, 255, 255, 0.78);
   }
   .results-cta-sub {
     display: block;
@@ -261,10 +281,16 @@
     Your selections are saved in your browser as you go.
   </p>
 
-  <a href="results.html" class="results-cta">
-    📊 View results so far →
-    <span class="results-cta-sub">See per-reviewer picks, where the team aligned, and recommended locks for every round.</span>
-  </a>
+  <div class="cta-row">
+    <a href="results.html" class="results-cta">
+      📊 View results so far →
+      <span class="results-cta-sub">Per-reviewer picks, alignments, and recommended locks per round.</span>
+    </a>
+    <a href="product-mocks.html" class="results-cta mocks-cta">
+      🎨 See the product with everything applied →
+      <span class="results-cta-sub">High-fidelity mocks of login, dashboards, member portal, and edge states using locked design.</span>
+    </a>
+  </div>
 
   <div class="section-label">Open rounds</div>
   <div class="decision-list">
