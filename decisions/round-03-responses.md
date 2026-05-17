@@ -20,13 +20,15 @@ Status: **OPEN** (collecting responses)
 
 ## Responses
 
-### Phil — 2026-05-17
+### Phil — 2026-05-17 _(revised same day: Dim 1 1C → 1D)_
 
 | 1 | 2 | 3 | 4 | 5 | 6 |
 |---|---|---|---|---|---|
-| 1C | 2A | 3A | 4D | 5B | 6C |
+| 1D | 2A | 3A | 4D | 5B | 6C |
 
 **Comments:** (none)
+
+> Original Dim 1 pick was 1C Activity-first; revised to 1D Mixed/balanced.
 
 ---
 
@@ -38,11 +40,13 @@ Status: **OPEN** (collecting responses)
 
 ## Running tally (1 of 3 responses in)
 
-Phil's picks lean operational/efficient — today-focused KPIs (1C), full-width schedule grid (3A), mixed right rail (4D), compact density (5B), honest zeros for empty state (6C). The one richer pick is 2A revenue trend as the hero chart, which gives owners the "money narrative" anchor even though the KPIs above it are floor-ops-flavored.
+Phil's picks lean balanced/operational — one KPI from each area (1D Mixed: Members, Revenue, Today's Sessions, Tasks, Alerts), full-width schedule grid (3A), mixed right rail (4D), compact density (5B), honest zeros for empty state (6C). The hero chart 2A revenue trend anchors the money narrative without forcing it into the KPI strip.
+
+Notable pairing: **1D KPIs + 4D right rail** = both "small section from each area" pattern. Reduces redundancy concern between top-of-fold and right-rail (each shows different facets of the same areas: Tasks/Alerts shown as counts in 1D, as actionable items in 4D).
 
 | Dim | Phil | Craig | Mike | Status |
 |---|---|---|---|---|
-| 1. KPI priority | 1C Activity-first | — | — | awaiting |
+| 1. KPI priority | 1D Mixed | — | — | awaiting |
 | 2. Hero chart | 2A Revenue trend | — | — | awaiting |
 | 3. Schedule placement | 3A Full-width grid | — | — | awaiting |
 | 4. Right-rail | 4D Mixed | — | — | awaiting |
