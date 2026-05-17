@@ -28,11 +28,39 @@ Phase 6.5.H).
 
 ## Responses
 
-### Phil — _awaiting response_
+### Phil — 2026-05-17
+
+| 1 Gym admin | 2 Trainer | 3 Member portal |
+|---|---|---|
+| 1A Growth | 2C Today | 3A Activity |
+
+**Comments:** (none)
+
+---
+
+### Mike — 2026-05-17
+
+| 1 Gym admin | 2 Trainer | 3 Member portal |
+|---|---|---|
+| 1A Growth | 2C Today | 3C Achievement |
+
+**Comments:** (none)
+
+---
 
 ### Craig — _awaiting response_
 
-### Mike — _awaiting response_
+---
+
+## Running tally (2 of 3 responses in)
+
+| Dim | Phil | Mike | Craig | Alignment |
+|---|---|---|---|---|
+| 1. Gym admin | 1A Growth | 1A Growth | — | ✅ Both Growth (ChatGPT recommendation holds) |
+| 2. Trainer | 2C Today | 2C Today | — | ✅ Both Today (not ChatGPT's Income) |
+| 3. Member portal | 3A Activity | 3C Achievement | — | ⚠️ Split — Craig breaks tie |
+
+**Interesting:** Phil and Mike both went **2C Trainer = Today** rather than ChatGPT's recommended 2A Income. Worth noting why — possibly because most fitquake trainers are staff (not independents running their own book), so "today's sessions + earnings" matches what they actually need at login. Income-focused metrics would suit independents better.
 
 ---
 
